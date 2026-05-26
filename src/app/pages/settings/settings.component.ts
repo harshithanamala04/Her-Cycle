@@ -19,8 +19,6 @@ import { BottomNavbarComponent } from '../../components/bottom-navbar/bottom-nav
 })
 export class SettingsComponent implements OnInit {
   isDarkMode: boolean = false;
-  
-  // Dynamic User Template Profile States
   userName: string = '';
   userEmail: string = '';
   uid: string = '';
@@ -31,21 +29,15 @@ export class SettingsComponent implements OnInit {
   private firestore = inject(Firestore);
 
   ngOnInit(): void {
-    // 1. Sync global template theme variable layout markers
     this.isDarkMode = this.themeService.getCurrentThemeStatus();
 
-    // 2. Fetch authenticated profile data streams live from Firebase
     this.auth.onAuthStateChanged(async (user) => {
       if (!user) {
-        // Redirect to login if user session doesn't exist
         this.router.navigate(['/']);
         return;
       }
-
       this.uid = user.uid;
       this.userEmail = user.email || '';
-      
-      // Load custom profile properties like the user's name from Firestore
       await this.fetchUserProfileData();
     });
   }
@@ -54,19 +46,23 @@ export class SettingsComponent implements OnInit {
     try {
       const docRef = doc(this.firestore, 'users', this.uid);
       const docSnap = await getDoc(docRef);
-
       if (docSnap.exists()) {
         const userData = docSnap.data();
-        // Fallback to name field, or displayName from auth if missing in document
         this.userName = userData['name'] || userData['username'] || this.auth.currentUser?.displayName || 'User';
       } else {
-        // Fallback default metric markers if document doesn't exist yet
         this.userName = this.auth.currentUser?.displayName || 'Cycle Tracker User';
       }
     } catch (error) {
-      console.error('Error fetching dynamic settings profile header:', error);
+      console.error('Error fetching user profile headers:', error);
       this.userName = 'Cycle Tracker User';
     }
+  }
+
+  /**
+   * NAVIGATIONAL FIX: Returns user back to primary layout dashboard safely
+   */
+  goBackToToday(): void {
+    this.router.navigate(['/today']);
   }
 
   toggleDarkMode(): void {

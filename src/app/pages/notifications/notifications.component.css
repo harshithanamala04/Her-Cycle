@@ -1,141 +1,230 @@
-.settings-page {
+/* ==========================================
+   1. CORE GLOBAL PAGE FRAMES
+   ========================================== */
+.notifications-page {
   min-height: 100vh;
-  background: var(--settings-bg);
-  padding: 24px;
+  background-color: #ffffff;
+  padding: 40px 24px 160px 24px;
+  transition: background-color 0.3s ease;
+  box-sizing: border-box;
 }
 
-.quote-card {
+.notifications-container {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ==========================================
+   2. TYPOGRAPHY & HEADER ROW FORMATTING
+   ========================================== */
+.notifications-main-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.notifications-back-btn {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000000;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  padding: 4px 12px 4px 0;
+  display: inline-block;
+}
+
+.notifications-back-btn:hover {
+  transform: translateX(-4px);
+  color: #ff7ebb;
+}
+
+.notifications-main-title {
+  text-align: center;
+  flex: 1;
+}
+
+.header-spacer {
+  width: 44px; /* Perfectly counterbalances the back arrow size to keep title perfectly centered */
+}
+
+.notifications-main-title h1 {
+  font-size: 36px;
+  font-weight: 800;
+  color: #000000;
+  margin: 0;
+  font-family: serif, system-ui;
+}
+
+/* ==========================================
+   3. INSPIRATIONAL QUOTE CARD BANNER
+   ========================================== */
+.quote-card-bubble {
+  background: linear-gradient(135deg, #fff1f6 0%, #f6f0fe 100%);
+  border-radius: 24px;
+  padding: 24px;
   display: flex;
   align-items: center;
   gap: 16px;
-  background: linear-gradient(135deg, #fff0f6 0%, #f3f0ff 100%);
-  border-radius: 24px;
-  padding: 20px 24px;
-  margin-bottom: 28px;
-  box-shadow: 0 4px 15px rgba(255, 115, 166, 0.08);
-  border: 1px solid rgba(255, 115, 166, 0.15);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(147, 130, 182, 0.03);
 }
 
-:root.dark .quote-card {
-  background: linear-gradient(135deg, #251c2c 0%, #1a1625 100%);
-  border: 1px solid rgba(255, 115, 166, 0.2);
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
+.quote-icon-decor {
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.quote-icon {
-  font-size: 28px;
-  animation: float 3s ease-in-out infinite;
+.dashboard-quote-text {
+  font-size: 16px;
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.5;
+  color: #4a3e56;
+  margin: 0;
+  text-align: left;
 }
 
-.quote-content {
+/* ==========================================
+   4. REMINDERS ROW CARD LAYOUTS
+   ========================================== */
+.notifications-options-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.quote-text {
-  font-style: italic;
-  font-size: 16px;
-  line-height: 1.4;
-  color: #4a3e56;
-  font-weight: 500;
-}
-
-:root.dark .quote-text {
-  color: #e5deed;
-}
-
-
-.settings-card {
-  background: var(--card-bg);
-  border-radius: 28px;
-  padding: 10px 20px;
-  box-shadow: 0 4px 20px var(--shadow-color);
-}
-
-.setting-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 22px 0;
+  gap: 12px;
   width: 100%;
 }
 
-.left {
+.notification-item-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  padding: 14px 4px;
+  width: 100%;
 }
 
-.icon {
-  width: 50px;
-  height: 50px;
+.row-left-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.row-emoji-icon {
+  font-size: 22px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
-.pink-bg { background-color: #ffe3ee; }
-.yellow-bg { background-color: #fff9db; }
-.purple-bg { background-color: #f3f0ff; }
-.blue-bg { background-color: #e3f2fd; }
+.period-alert-badge { background: #ffeef2; }
+.fertile-alert-badge { background: #fffbeb; }
+.ovulation-alert-badge { background: #f3f0ff; }
+.water-reminder-badge { background: #e0f2fe; }
 
-.text-group h3 {
+.row-meta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.row-meta-text h3 {
+  font-size: 19px;
+  font-weight: 700;
+  color: #000000;
   margin: 0;
-  font-size: 18px;
-  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-.text-group p {
-  margin-top: 4px;
-  color: var(--text-secondary);
+.row-meta-text p {
   font-size: 14px;
+  color: #555555;
+  margin: 0;
+  font-weight: 500;
 }
 
-.divider {
-  height: 1px;
-  background: var(--border-color);
-}
-
-input[type="checkbox"] {
-  cursor: pointer;
-  width: 44px;
-  height: 24px;
-  appearance: none;
-  -webkit-appearance: none;
-  background: #ccc;
-  border-radius: 12px;
+/* ==========================================
+   5. iOS SMOOTH PINK SLIDER SWITCHES
+   ========================================== */
+.reminder-toggle-switch {
   position: relative;
-  outline: none;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
   flex-shrink: 0;
-  transition: background 0.3s ease;
 }
 
-input[type="checkbox"]:checked {
-  background: #ff73a6;
+.reminder-toggle-switch input {
+  opacity: 0; width: 0; height: 0; display: none;
 }
 
-input[type="checkbox"]::before {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
+.toggle-slider-pill {
+  position: absolute; cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #e5dfec;
+  transition: background-color .3s ease;
+  border-radius: 34px;
+}
+
+.toggle-slider-pill:before {
+  position: absolute; content: "";
+  height: 22px; width: 22px; left: 3px; bottom: 3px;
+  background-color: #ffffff;
+  transition: transform .3s ease;
   border-radius: 50%;
-  top: 2px;
-  left: 2px;
-  background: white;
-  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-input[type="checkbox"]:checked::before {
-  transform: translateX(20px);
+.reminder-toggle-switch input:checked + .toggle-slider-pill {
+  background-color: #ff7ebb !important;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+.reminder-toggle-switch input:checked + .toggle-slider-pill:before {
+  transform: translateX(22px);
+}
+
+/* ==========================================
+   6. PREMIUM SYSTEM DARK MODE TUNING HOOKS
+   ========================================== */
+html.dark .notifications-page {
+  background-color: #0d0714 !important;
+}
+
+html.dark .quote-card-bubble {
+  background: rgba(29, 21, 38, 0.65) !important;
+  border: 1px solid rgba(255, 45, 112, 0.15) !important;
+}
+
+html.dark .dashboard-quote-text {
+  color: #e5dbf0 !important;
+}
+
+html.dark .notifications-main-title h1,
+html.dark .row-meta-text h3,
+html.dark .notifications-back-btn {
+  color: #ffffff !important;
+}
+
+html.dark .row-meta-text p {
+  color: #a496b5 !important;
+}
+
+html.dark .period-alert-badge { background: rgba(255, 45, 112, 0.15) !important; }
+html.dark .fertile-alert-badge { background: rgba(234, 179, 8, 0.15) !important; }
+html.dark .ovulation-alert-badge { background: rgba(139, 92, 246, 0.15) !important; }
+html.dark .water-reminder-badge { background: rgba(56, 189, 248, 0.15) !important; }
+
+html.dark .toggle-slider-pill {
+  background-color: #271d33;
 }

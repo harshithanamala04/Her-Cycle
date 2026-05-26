@@ -1,64 +1,183 @@
-.period-edit-page{
-  background:#fafafa;
-  min-height:100vh;
-  padding:20px;
-  max-width:430px;
-  margin:auto;
+/* ==========================================
+   1. CORE PAGE SHELL SETUPS
+   ========================================== */
+.period-edit-page {
+  min-height: 100vh;
+  background-color: #f4f0fb;
+  padding: 32px 24px 140px 24px;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
 }
 
-.top-bar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:25px;
+.edit-container {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.top-bar h2{
-  font-size:34px;
+/* ==========================================
+   2. INTERACTIVE HEADER ELEMENTS
+   ========================================== */
+.edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
 }
 
-.top-bar i{
-  font-size:30px;
+.back-arrow-btn {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111111;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  padding: 4px 8px;
 }
 
-.tip-box{
-  background:#f4f4f4;
-  padding:16px;
-  border-radius:15px;
-  margin-bottom:25px;
+.back-arrow-btn:hover {
+  transform: translateX(-3px);
+  color: #ff2d70;
 }
 
-.calendar-grid{
-  display:grid;
-  grid-template-columns:
-    repeat(7,1fr);
-  gap:12px;
+.month-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #111111;
+  margin: 0;
 }
 
-.day{
-  width:50px;
-  height:50px;
-  border-radius:50%;
-  border:2px solid #ddd;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  cursor:pointer;
+.header-calendar-icon {
+  font-size: 22px;
+  color: #111111;
 }
 
-.selected{
-  background:#ff4f95;
-  color:white;
-  border:none;
+/* ==========================================
+   3. SYSTEM INFO BADGE BANNERS
+   ========================================== */
+.info-alert-toast {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(230, 220, 240, 0.6);
+  padding: 14px 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(147, 130, 182, 0.03);
 }
 
-.save-btn{
-  width:100%;
-  margin-top:40px;
-  border:none;
-  background:#ff4f95;
-  color:white;
-  padding:20px;
-  border-radius:50px;
-  font-size:22px;
+.info-alert-toast p {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3f354a;
+  margin: 0;
+}
+
+.toast-emoji {
+  font-size: 16px;
+}
+
+/* ==========================================
+   4. Day Picker 7-Column Layout Matrix Grid
+   ========================================== */
+.edit-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  padding: 4px;
+}
+
+.edit-day-cell {
+  aspect-ratio: 1;
+  background-color: #ffffff;
+  border: 1px solid rgba(230, 220, 240, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2d2238;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(147, 130, 182, 0.04);
+}
+
+.edit-day-cell:hover {
+  background-color: #fcf9fe;
+  transform: scale(1.06);
+}
+
+/* Day Active Highlight Selection State -> Tracking Hot Pink */
+.edit-day-cell.is-active {
+  background-color: #ff2d70 !important;
+  color: #ffffff !important;
+  border-color: #ff2d70 !important;
+  box-shadow: 0 4px 12px rgba(255, 45, 112, 0.3) !important;
+  font-weight: 700;
+}
+
+/* ==========================================
+   5. SYSTEM SAVE BUTTON WRAPPERS
+   ========================================== */
+.footer-action-wrapper {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.save-changes-btn {
+  width: 100%;
+  background: #ff2d70;
+  color: #ffffff;
+  border: none;
+  padding: 16px;
+  border-radius: 20px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 5px 16px rgba(255, 45, 112, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.save-changes-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(255, 45, 112, 0.35);
+}
+
+/* ==========================================
+   6. DYNAMIC SYSTEM DARK THEME OVERRIDES MAPPINGS
+   ========================================== */
+html.dark .period-edit-page {
+  background-color: #0d0714 !important;
+}
+
+html.dark .month-title,
+html.dark .back-arrow-btn,
+html.dark .header-calendar-icon {
+  color: #ffffff !important;
+}
+
+html.dark .info-alert-toast {
+  background: rgba(29, 21, 38, 0.65) !important;
+  border: 1px solid rgba(255, 45, 112, 0.15) !important;
+}
+
+html.dark .info-alert-toast p {
+  color: #bfaecf !important;
+}
+
+html.dark .edit-day-cell {
+  background-color: #1d1526;
+  border: 1px solid rgba(255, 45, 112, 0.1);
+  color: #e5dbf0;
+}
+
+html.dark .edit-day-cell:hover {
+  background-color: #271d33;
+}
+
+html.dark .edit-day-cell.is-active {
+  background-color: #ff2d70 !important;
+  color: #ffffff !important;
 }

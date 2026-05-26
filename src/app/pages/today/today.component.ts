@@ -1,10 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
 import { Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore';
 import { BottomNavbarComponent } from '../../components/bottom-navbar/bottom-navbar.component';
 import { CycleSyncService } from '../../services/cycle-sync.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-today',
@@ -12,12 +13,12 @@ import { CycleSyncService } from '../../services/cycle-sync.service';
   imports: [
     CommonModule,
     RouterModule,
-    BottomNavbarComponent // <-- Registered cleanly here
+    BottomNavbarComponent
   ],
   templateUrl: './today.component.html',
   styleUrls: ['./today.component.css']
 })
-export class TodayComponent implements OnInit {
+export class TodayComponent implements OnInit, OnDestroy {
 
   title = 'Period';
   periodDay = '';
@@ -33,14 +34,11 @@ export class TodayComponent implements OnInit {
 
   private router = inject(Router);
   private syncService = inject(CycleSyncService);
-
-  constructor(
-    private auth: Auth,
-    private firestore: Firestore
-  ) {
-    const today = new Date();
-    this.selectedLogDate = today.toISOString().split('T')[0];
-  }
+  private auth = inject(Auth);
+  private firestore = inject(Firestore);
+  
+  // Track active page streams safely to clear memories later
+  private syncSubscription!: Subscription;
 
   async ngOnInit() {
     this.auth.onAuthStateChanged(async (user) => {
@@ -51,6 +49,14 @@ export class TodayComponent implements OnInit {
 
       this.uid = user.uid;
       this.calculateCycleData();
+    });
+
+    // CRITICAL FIXED CHANGE: Listens live for edits! If you save changes on another page, it recalculates instantly!
+    this.syncSubscription = this.syncService.cycleUpdated$.subscribe(() => {
+      if (this.uid) {
+        console.log('Sync Service Signal Intercepted. Updating dashboard data parameters...');
+        this.calculateCycleData();
+      }
     });
   }
 
@@ -117,19 +123,16 @@ export class TodayComponent implements OnInit {
       });
 
       this.toggleLogModal(false);
-      await this.calculateCycleData();
-      
-      // Notify other pages like the Calendar to reload Firestore snapshot structures
-      this.syncService.notifyCycleChanged();
-      
-      alert('Cycle logged successfully! ✨');
+      this.syncService.notifyCycleChanged(); // Broadcasts update state out across other view channels
     } catch (error) {
       console.error("Error logging cycle: ", error);
-      alert('Could not update log. Please try again.');
     }
   }
 
-  navigateToCalendar() {
-    this.router.navigate(['/calendar']);
+  // Clear sub channels on component destruction to save system device performance memory
+  ngOnDestroy(): void {
+    if (this.syncSubscription) {
+      this.syncSubscription.unsubscribe();
+    }
   }
 }

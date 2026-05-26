@@ -1,4 +1,6 @@
-/* Base Screen Wrapper */
+/* ==========================================
+   1. CORE GLOBAL PAGE FRAMES
+   ========================================== */
 .settings-page {
   min-height: 100vh;
   background-color: #f4f0fb;
@@ -6,7 +8,6 @@
   transition: background-color 0.3s ease;
 }
 
-/* Localized container limit that won't leak to other components */
 .settings-container {
   max-width: 500px;
   margin: 0 auto;
@@ -15,9 +16,38 @@
   gap: 24px;
 }
 
+/* ==========================================
+   2. TYPOGRAPHY & HEADER ROW FORMATTING
+   ========================================== */
+.settings-main-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 4px;
+}
+
+.settings-back-btn {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111111;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  padding: 4px 12px 4px 0;
+}
+
+.settings-back-btn:hover {
+  transform: translateX(-3px);
+  color: #ff2d70;
+}
+
 .settings-main-title {
   text-align: center;
-  margin-bottom: 8px;
+  flex: 1;
+}
+
+.header-spacer {
+  width: 40px; /* Perfectly counterbalances back button area size to keep title perfectly centered */
 }
 
 .settings-main-title h1 {
@@ -34,6 +64,9 @@
   margin: 0;
 }
 
+/* ==========================================
+   3. ITEM CARDS DEFINITIONS
+   ========================================== */
 .account-header-card {
   background: #ffffff;
   border-radius: 24px;
@@ -127,7 +160,9 @@
   font-weight: bold;
 }
 
-/* Pink iOS Toggle */
+/* ==========================================
+   4. ORIGINAL PREMIUM iOS SLIDER SWITCH
+   ========================================== */
 .theme-toggle-switch {
   position: relative;
   display: inline-block;
@@ -162,4 +197,34 @@ input:checked + .toggle-slider-pill {
 
 input:checked + .toggle-slider-pill:before {
   transform: translateX(20px);
+}
+
+/* ==========================================
+   5. UNIFIED SYSTEM DARK MODE HOOKS
+   ========================================== */
+html.dark .account-header-card,
+html.dark .settings-options-list {
+  background: #1d1526 !important;
+  border: 1px solid rgba(255, 45, 112, 0.12) !important;
+}
+
+html.dark .settings-main-title h1,
+html.dark .profile-details-group h2,
+html.dark .row-meta-text h3,
+html.dark .settings-back-btn {
+  color: #ffffff !important;
+}
+
+html.dark .settings-main-title p,
+html.dark .profile-details-group p,
+html.dark .row-meta-text p {
+  color: #a496b5 !important;
+}
+
+html.dark .row-emoji-icon {
+  background: #271d33 !important;
+}
+
+html.dark .settings-row:not(:last-child) {
+  border-bottom: 1px solid #271d33 !important;
 }

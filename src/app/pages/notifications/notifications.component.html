@@ -1,83 +1,103 @@
-<div class="settings-page">
+<div class="notifications-page">
+  <div class="notifications-container">
 
-  <div class="header">
-    <h1>Notifications</h1>
+    <div class="notifications-main-title-row">
+      <span class="notifications-back-btn" (click)="goBackToToday()">←</span>
+      <div class="notifications-main-title">
+        <h1>Reminders</h1>
+      </div>
+      <span class="header-spacer"></span> </div>
+
+    <div class="quote-card-bubble">
+      <div class="quote-icon-decor">✨</div>
+      <p class="dashboard-quote-text">"Self-care is how you take your power back."</p>
+    </div>
+
+    <div class="notifications-options-list">
+      
+      <div class="notification-item-row">
+        <div class="row-left-content">
+          <span class="row-emoji-icon period-alert-badge">🩸</span>
+          <div class="row-meta-text">
+            <h3>Period Reminder</h3>
+            <p>Get notified before period starts</p>
+          </div>
+        </div>
+        <div class="row-right-action">
+          <label class="reminder-toggle-switch">
+            <input 
+              type="checkbox" 
+              [checked]="periodReminderEnabled" 
+              (change)="togglePeriodReminder()"
+            >
+            <span class="toggle-slider-pill"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="notification-item-row">
+        <div class="row-left-content">
+          <span class="row-emoji-icon fertile-alert-badge">🌼</span>
+          <div class="row-meta-text">
+            <h3>Fertile Window Alert</h3>
+            <p>Reminder during fertile days</p>
+          </div>
+        </div>
+        <div class="row-right-action">
+          <label class="reminder-toggle-switch">
+            <input 
+              type="checkbox" 
+              [checked]="fertileReminderEnabled" 
+              (change)="toggleFertileReminder()"
+            >
+            <span class="toggle-slider-pill"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="notification-item-row">
+        <div class="row-left-content">
+          <span class="row-emoji-icon ovulation-alert-badge">💜</span>
+          <div class="row-meta-text">
+            <h3>Ovulation Reminder</h3>
+            <p>Track ovulation day</p>
+          </div>
+        </div>
+        <div class="row-right-action">
+          <label class="reminder-toggle-switch">
+            <input 
+              type="checkbox" 
+              [checked]="ovulationReminderEnabled" 
+              (change)="toggleOvulationReminder()"
+            >
+            <span class="toggle-slider-pill"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="notification-item-row">
+        <div class="row-left-content">
+          <span class="row-emoji-icon water-reminder-badge">💧</span>
+          <div class="row-meta-text">
+            <h3>Water Intake Reminder</h3>
+            <p>Remind me to drink water every 1 hr</p>
+          </div>
+        </div>
+        <div class="row-right-action">
+          <label class="reminder-toggle-switch">
+            <input 
+              type="checkbox" 
+              [checked]="waterReminderEnabled" 
+              (change)="toggleWaterReminder()"
+            >
+            <span class="toggle-slider-pill"></span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
   </div>
-
-  <div class="quote-card">
-    <span class="quote-icon">✨</span>
-    <div class="quote-content">
-      <p class="quote-text">"Self-care is how you take your power back."</p>
-    </div>
-  </div>
-
-  <div class="settings-card">
-    
-    <div class="setting-row">
-      <div class="left">
-        <span class="icon pink-bg">🩸</span>
-        <div class="text-group">
-          <h3>Period Reminder</h3>
-          <p>Get notified before period starts</p>
-        </div>
-      </div>
-      <input 
-        type="checkbox"
-        [checked]="notificationService.periodReminder()"
-        (change)="notificationService.togglePreference('period', $any($event.target).checked)"
-      >
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="setting-row">
-      <div class="left">
-        <span class="icon yellow-bg">🌼</span>
-        <div class="text-group">
-          <h3>Fertile Window Alert</h3>
-          <p>Reminder during fertile days</p>
-        </div>
-      </div>
-      <input 
-        type="checkbox"
-        [checked]="notificationService.fertileReminder()"
-        (change)="notificationService.togglePreference('fertile', $any($event.target).checked)"
-      >
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="setting-row">
-      <div class="left">
-        <span class="icon purple-bg">💜</span>
-        <div class="text-group">
-          <h3>Ovulation Reminder</h3>
-          <p>Track ovulation day</p>
-        </div>
-      </div>
-      <input 
-        type="checkbox"
-        [checked]="notificationService.ovulationReminder()"
-        (change)="notificationService.togglePreference('ovulation', $any($event.target).checked)"
-      >
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="setting-row">
-      <div class="left">
-        <span class="icon blue-bg">💧</span>
-        <div class="text-group">
-          <h3>Water Intake Reminder</h3>
-          <p>Remind me to drink water every 1 hr</p>
-        </div>
-      </div>
-      <input 
-        type="checkbox"
-        [checked]="notificationService.waterReminder()"
-        (change)="notificationService.togglePreference('water', $any($event.target).checked)"
-      >
-    </div>
-
-  </div>
+  
+  <app-bottom-navbar></app-bottom-navbar>
 </div>

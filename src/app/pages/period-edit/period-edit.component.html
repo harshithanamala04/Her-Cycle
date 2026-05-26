@@ -1,43 +1,33 @@
 <div class="period-edit-page">
+  <div class="edit-container">
 
-  <div class="top-bar">
+    <div class="edit-header">
+      <span class="back-arrow-btn" (click)="goBackToToday()">←</span>
+      <h1 class="month-title">{{ currentMonthName }}</h1>
+      <i class="bi bi-calendar3 header-calendar-icon"></i>
+    </div>
 
-    <i
-      class="bi bi-arrow-left"
-      routerLink="/">
-    </i>
+    <div class="info-alert-toast">
+      <span class="toast-emoji">🩸</span>
+      <p>Tap start day, then tap end day to set your continuous range block</p>
+    </div>
 
-    <h2>May</h2>
+    <div class="edit-days-grid">
+      <div 
+        *ngFor="let day of days" 
+        class="edit-day-cell"
+        [class.is-active]="isDaySelected(day)"
+        (click)="handleDaySelection(day)"
+      >
+        {{ day }}
+      </div>
+    </div>
 
-    <i class="bi bi-calendar3"></i>
-
-  </div>
-
-  <div class="tip-box">
-    🩸 Tap on date to adjust
-    your period
-  </div>
-
-  <div class="calendar-grid">
-
-    <div
-      class="day"
-      *ngFor="let day of days"
-      [class.selected]="
-        selectedDays.includes(day)
-      "
-      (click)="selectDay(day)"
-    >
-      {{ day }}
+    <div class="footer-action-wrapper">
+      <button class="save-changes-btn" (click)="savePeriodChanges()">
+        Save Changes
+      </button>
     </div>
 
   </div>
-
-  <button
-    class="save-btn"
-    (click)="savePeriod()"
-  >
-    Save
-  </button>
-
 </div>

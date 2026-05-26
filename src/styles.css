@@ -6,12 +6,13 @@ html.dark body {
   color: #f3ebfc !important;
 }
 
-/* Base View Layout Page Wrappers Sync */
+/* Base View Layout Page Wrappers Sync (UPDATED: Added .period-edit-page here!) */
 html.dark .settings-page,
 html.dark .today-page,
 html.dark .calendar-page,
 html.dark .self-care-page,
-html.dark .analysis-page {
+html.dark .analysis-page,
+html.dark .period-edit-page {
   background-color: #0d0714 !important;
 }
 
@@ -35,7 +36,8 @@ html.dark h2,
 html.dark h3, 
 html.dark .row-meta-text h3,
 html.dark .period-title,
-html.dark .settings-main-title h1 {
+html.dark .settings-main-title h1,
+html.dark .month-title {
   color: #ffffff !important;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -68,8 +70,9 @@ html.dark [class*=" bi-"] {
 
 /* Keep chevron navigation arrows inside your cards styled cleanly */
 html.dark .navigation-arrow,
-html.dark .row-right-action span {
-  color: #bfaecf !important;
+html.dark .row-right-action span,
+html.dark .back-arrow-btn {
+  color: #ffffff !important;
 }
 
 /* ==========================================
