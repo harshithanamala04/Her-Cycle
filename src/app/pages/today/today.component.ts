@@ -2,8 +2,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
-import { Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore'; // Added updateDoc
+import { Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore';
 import { BottomNavbarComponent } from '../../components/bottom-navbar/bottom-navbar.component';
+import { CycleSyncService } from '../../services/cycle-sync.service';
 
 @Component({
   selector: 'app-today',
@@ -11,7 +12,7 @@ import { BottomNavbarComponent } from '../../components/bottom-navbar/bottom-nav
   imports: [
     CommonModule,
     RouterModule,
-    BottomNavbarComponent
+    BottomNavbarComponent // <-- Registered cleanly here
   ],
   templateUrl: './today.component.html',
   styleUrls: ['./today.component.css']
@@ -25,19 +26,18 @@ export class TodayComponent implements OnInit {
   fertileDate = '';
   ovulationDate = ''; 
   periodLength = 0;
-  uid = ''; // Store user id globally
+  uid = ''; 
 
-  // Modal State Control Parameters
   showLogModal = false;
   selectedLogDate = '';
 
   private router = inject(Router);
+  private syncService = inject(CycleSyncService);
 
   constructor(
     private auth: Auth,
     private firestore: Firestore
   ) {
-    // Set default value in input date field to current calendar day
     const today = new Date();
     this.selectedLogDate = today.toISOString().split('T')[0];
   }
@@ -112,14 +112,16 @@ export class TodayComponent implements OnInit {
     try {
       const userDocRef = doc(this.firestore, 'users', this.uid);
       
-      // Update the database structure with the newly logged cycle launch point
       await updateDoc(userDocRef, {
         lastPeriodDate: this.selectedLogDate
       });
 
       this.toggleLogModal(false);
-      // Re-trigger calculation computations instantly to shift metrics on dashboard display
       await this.calculateCycleData();
+      
+      // Notify other pages like the Calendar to reload Firestore snapshot structures
+      this.syncService.notifyCycleChanged();
+      
       alert('Cycle logged successfully! ✨');
     } catch (error) {
       console.error("Error logging cycle: ", error);

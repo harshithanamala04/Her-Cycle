@@ -1,202 +1,205 @@
+/* ==========================================
+   1. SCREEN MATRIX WRAPPERS & SHELLS
+   ========================================== */
 .calendar-page {
-  background: #f7f1fb;
   min-height: 100vh;
-  padding: 20px;
-  padding-bottom: 120px;
+  background-color: #f4f0fb;
+  padding: 32px 20px 160px 20px; /* Generous bottom spacing creates clearance for navbar container */
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
 }
 
-/* HEADER */
-
-.calendar-header {
+.calendar-container {
+  max-width: 500px;
+  margin: 0 auto;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
+  flex-direction: column;
+  gap: 22px;
 }
 
-.header-text {
+/* ==========================================
+   2. TEXT HEADERS ELEMENTS
+   ========================================== */
+.calendar-header {
   text-align: center;
+  margin-bottom: 4px;
 }
 
-.header-text h1 {
-  font-size: 42px;
-  font-weight: 700;
+.calendar-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111111;
+  margin: 0 0 4px 0;
+}
+
+.calendar-header .subtitle-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #8e839c;
   margin: 0;
-  color: #222;
 }
 
-.header-text p {
-  margin-top: 6px;
-  color: #777;
-  font-size: 16px;
-}
-
-.back-btn,
-.icon-btn {
-  width: 50px;
-  height: 50px;
-  border: none;
-  border-radius: 50%;
-  background: white;
-  font-size: 22px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-/* WEEK DAYS */
-
-.week-days {
+/* ==========================================
+   3. WEEK LABELS ROW HEADERS
+   ========================================== */
+.weekdays-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, 1fr); /* Forms perfect 7 columns structure */
   text-align: center;
-  margin-bottom: 16px;
-  font-weight: 600;
-  color: #666;
+  font-weight: 700;
+  font-size: 13px;
+  color: #8e839c;
+  padding: 0 4px;
+  margin-bottom: -4px;
 }
 
-/* CALENDAR */
-
-.calendar-grid {
+/* ==========================================
+   4. CORE 7-COLUMN DAYS GRID MATRIX
+   ========================================== */
+.days-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 14px;
+  grid-template-columns: repeat(7, 1fr); 
+  gap: 10px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(147, 130, 182, 0.05);
+  border: 1px solid rgba(230, 220, 240, 0.4);
+  box-sizing: border-box;
 }
 
-.day-box {
-  height: 85px;
-  background: white;
-  border-radius: 24px;
+.day-cell {
+  aspect-ratio: 1; /* Guarantees blocks render as perfect clean squares */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 15px;
   font-weight: 600;
+  color: #2d2238;
+  border-radius: 14px;
   cursor: pointer;
-  transition: 0.3s;
-  box-shadow:
-    0 4px 10px rgba(0,0,0,0.05);
+  position: relative;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-.day-box:hover {
+.day-cell:hover {
+  background: #f7f3fd;
   transform: scale(1.05);
 }
 
-/* PERIOD */
-
-.period {
-  background: #ff73a6;
-  color: white;
+/* Active Highlight Outline Indicator for Today's Real Calendar Date */
+.day-cell.is-today {
+  border: 2px solid #5c52cb;
+  color: #5c52cb;
 }
 
-/* FERTILE */
+/* ==========================================
+   5. CONDITION STATUS TRACKING COLOR OVERRIDES (LIGHT THEME)
+   ========================================== */
 
-.fertile {
-  background: #ffe69b;
+/* 1. Period Days -> Branded Tracking Pink */
+.day-cell.is-period {
+  background-color: #ff2d70 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(255, 45, 112, 0.25);
+  font-weight: 700;
 }
 
-/* OVULATION */
-
- .ovulation {
-  background: #8b5cf6 !important;
-  color: white !important;
-  border: 4px solid #6d28d9;
-  box-shadow:
-    0 0 20px rgba(139, 92, 246, 0.5);
+/* 2. Fertile Window -> Beautiful Soft Periwinkle Purple */
+.day-cell.is-fertile {
+  background-color: #e0e7ff !important;
+  color: #3730a3 !important;
+  font-weight: 600;
 }
 
-/* TODAY */
-
-.today {
-  box-shadow:
-    0 0 0 4px #3b82f6;
+/* 3. Peak Ovulation Day -> Rich Pastel Yellow */
+.day-cell.is-ovulation {
+  background-color: #fef08a !important;
+  color: #854d0e !important;
+  border: 2px solid #eab308;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(234, 179, 8, 0.15);
 }
 
-/* LEGEND */
-
-.legend {
+/* ==========================================
+   6. SUMMARY LEGEND PANEL
+   ========================================== */
+.summary-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(147, 130, 182, 0.05);
+  border: 1px solid rgba(230, 220, 240, 0.4);
   display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-top: 28px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.legend-item {
+.summary-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 500;
+  gap: 14px;
 }
 
-.pink-dot,
-.yellow-dot,
-.purple-dot {
-  width: 18px;
-  height: 18px;
+.legend-dot {
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.pink-dot {
-  background: #ff73a6;
+/* Sync Legend dots to match custom grid colors exactly */
+.legend-dot.period-dot { background-color: #ff2d70; }
+.legend-dot.fertile-dot { background-color: #e0e7ff; border: 1px solid #c7d2fe; }
+.legend-dot.ovulation-dot { background-color: #fef08a; border: 1px solid #eab308; }
+
+.summary-text h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111111;
+  margin: 0 0 2px 0;
 }
 
-.yellow-dot {
-  background: #ffe69b;
+.summary-text p {
+  font-size: 13px;
+  color: #777777;
+  margin: 0;
 }
 
-.purple-dot {
-  background: #8b5cf6;
+/* ==========================================
+   7. EXTRA NEON HIGH-CONTRAST FOR DARK MODE 
+   ========================================== */
+:root.dark .day-cell.is-period {
+  background-color: #ff2d70 !important;
+  color: #ffffff !important;
 }
 
-/* PREDICTION CARD */
-
-.prediction-card {
-  margin-top: 30px;
-  background: white;
-  border-radius: 30px;
-  padding: 25px;
-  box-shadow:
-    0 4px 15px rgba(0,0,0,0.08);
+/* Dark Mode specific fertile adjustment to maintain visibility */
+:root.dark .day-cell.is-fertile {
+  background-color: #1e1b4b !important;
+  color: #e0e7ff !important;
+  border: 1px dashed rgba(224, 231, 255, 0.3);
 }
 
-.prediction-card h2 {
-  margin-bottom: 20px;
-  font-size: 28px;
+/* Dark Mode specific ovulation adjustment to maintain visibility */
+:root.dark .day-cell.is-ovulation {
+  background-color: #423205 !important;
+  color: #fef08a !important;
+  border: 2px solid #a16207;
 }
 
-.prediction-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 18px;
-  padding: 18px;
-  border-radius: 18px;
-  background: #f7f1fb;
-}
-
-.prediction-item span {
-  color: #666;
-}
-
-.prediction-item strong {
-  color: #222;
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-  .day-box {
-    height: 58px;
-    font-size: 22px;
-    border-radius: 18px;
-  }
-
-  .header-text h1 {
-    font-size: 30px;
-  }
-
-  .prediction-item {
-    flex-direction: column;
-    gap: 8px;
-  }
+/* ==========================================
+   8. INTERACTIVE ABSOLUTE NAVBAR STACKING ASSURANCE
+   ========================================== */
+.calendar-page app-bottom-navbar,
+.calendar-page .bottom-nav,
+.calendar-page .bottom-navbar-container {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 70px !important;
+  z-index: 99999 !important;
+  display: flex !important;
 }

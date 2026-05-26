@@ -1,75 +1,63 @@
 <div class="settings-page">
+  <div class="settings-container">
 
-  <div class="header">
-    <h1>Settings</h1>
-    <p>Manage your account & cycle</p>
-  </div>
-
-  <div class="profile-card">
-    <div class="profile-icon">👩</div>
-    <div class="profile-info">
-      <h2>My Account</h2>
-      <p>{{ userEmail }}</p>
-    </div>
-  </div>
-
-  <div class="settings-card">
-
-    <div class="setting-row" routerLink="/setup-cycle">
-      <div class="left">
-        <span class="icon">🩸</span>
-        <div>
-          <h3>Cycle Settings</h3>
-          <p>Edit period details</p>
-        </div>
-      </div>
-      <span>→</span>
+    <div class="settings-main-title">
+      <h1>Settings</h1>
+      <p>Manage your account & cycle</p>
     </div>
 
-    <div class="divider"></div>
-
-    <div class="setting-row">
-      <div class="left">
-        <span class="icon">🔔</span>
-        <div>
-          <h3>Notifications</h3>
-          <p>
-            {{ notificationService.isEnabled() ? 'Reminders are active' : 'Period reminder' }}
-          </p>
-        </div>
+    <div class="account-header-card">
+      <div class="profile-avatar-wrapper">
+        <img 
+          [src]="'https://api.dicebear.com/7.x/adventurer/svg?seed=' + (userName || 'Guest')" 
+          alt="Profile Avatar" 
+          class="profile-avatar"
+        >
       </div>
-      <input 
-        type="checkbox"
-        [checked]="notificationService.isEnabled()"
-        (change)="notificationService.toggleNotifications($any($event.target).checked)"
-      >
+      <div class="profile-details-group">
+        <h2>{{ userName || 'Loading Account...' }}</h2>
+        <p>{{ userEmail || 'Fetching details...' }}</p>
+      </div>
     </div>
 
-    <div class="divider"></div>
-
-    <div class="setting-row">
-      <div class="left">
-        <span class="icon">
-          {{ themeService.isDarkMode() ? '☀️' : '🌙' }}
-        </span>
-        <div>
-          <h3>Dark Mode</h3>
-          <p>
-            {{ themeService.isDarkMode() ? 'Enabling light theme' : 'Reduce screen glare' }}
-          </p>
+    <div class="settings-options-list">
+      
+      <div class="settings-row" routerLink="/period-edit">
+        <div class="row-left-content">
+          <span class="row-emoji-icon">🩸</span>
+          <div class="row-meta-text">
+            <h3>Cycle Settings</h3>
+            <p>Edit period details</p>
+          </div>
+        </div>
+        <div class="row-right-action">
+          <span class="navigation-arrow">→</span>
         </div>
       </div>
-      <input 
-        type="checkbox" 
-        [checked]="themeService.isDarkMode()" 
-        (change)="themeService.toggleTheme()"
-      >
+
+      <div class="settings-row">
+        <div class="row-left-content">
+          <span class="row-emoji-icon">🌙</span>
+          <div class="row-meta-text">
+            <h3>Dark Mode</h3>
+            <p>{{ isDarkMode ? 'Enabling dark theme' : 'Enabling light theme' }}</p>
+          </div>
+        </div>
+        <div class="row-right-action">
+          <label class="theme-toggle-switch">
+            <input 
+              type="checkbox" 
+              [checked]="isDarkMode" 
+              (change)="toggleDarkMode()"
+            >
+            <span class="toggle-slider-pill"></span>
+          </label>
+        </div>
+      </div>
+
     </div>
 
   </div>
-
-  <button class="logout-btn" (click)="logout()">
-    Logout
-  </button>
-
+  
+  <app-bottom-navbar></app-bottom-navbar>
 </div>

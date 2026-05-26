@@ -1,19 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { BottomNavbarComponent } from './components/bottom-navbar/bottom-navbar.component'; // <-- 1. Import it here
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    CommonModule, 
-    RouterOutlet, 
-    BottomNavbarComponent // <-- 2. Add it to your imports array here
-  ],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  imports: [RouterOutlet],
+  template: `<router-outlet></router-outlet>`
 })
-export class AppComponent {
-  title = 'mycalendar-app';
+export class AppComponent implements OnInit {
+  // Injecting the service here forces the constructor to run and apply the theme to the <html> tag instantly
+  private themeService = inject(ThemeService);
+
+  ngOnInit(): void {
+    console.log('Global Theme Management Engine Engaged. Current dark mode state:', this.themeService.getCurrentThemeStatus());
+  }
 }

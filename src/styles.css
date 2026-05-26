@@ -1,52 +1,114 @@
-/* --- Global Responsive Phone Frame Configuration --- */
-@media (min-width: 769px) {
-  /* 1. Subtle, clean backdrop filling the whole laptop screen */
-  .desktop-wrapper {
-    min-height: 100vh;
-    background: #e2d9f3; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 0;
-  }
-
-  /* 2. The simulated mobile device container box */
-  .phone-frame-container {
-    width: 410px;
-    height: 840px;
-    background: var(--settings-bg, #f4f0fb);
-    border-radius: 40px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
-    border: 8px solid #ffffff; /* Phone border outline */
-    position: relative;
-    overflow: hidden; /* Clips everything inside the rounded frame */
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* 3. Allow only page content to scroll independently */
-  .page-content-scroll {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  /* 4. Lock the global fixed navbar to the bottom of the phone wrapper */
-  .phone-frame-container app-bottom-navbar,
-  .phone-frame-container ::ng-deep .bottom-nav-container,
-  .phone-frame-container ::ng-deep footer {
-    position: absolute !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    z-index: 1000;
-  }
+/* ==========================================
+   1. UNIFIED PREMIUM DARK SYSTEM CORE ENGINE
+   ========================================== */
+html.dark body {
+  background-color: #0d0714 !important; /* Premium Obsidian Dark Base */
+  color: #f3ebfc !important;
 }
 
-/* Ensure background stretches cleanly if viewed natively on a real mobile device */
-@media (max-width: 768px) {
-  .page-content-scroll {
-    min-height: 100vh;
-    padding-bottom: 90px;
-  }
+/* Base View Layout Page Wrappers Sync */
+html.dark .settings-page,
+html.dark .today-page,
+html.dark .calendar-page,
+html.dark .self-care-page,
+html.dark .analysis-page {
+  background-color: #0d0714 !important;
+}
+
+/* Premium UI Glassmorphic Panels - Replaces muddy solid grey boxes */
+html.dark .account-header-card,
+html.dark .settings-options-list,
+html.dark .feeling-card,
+html.dark .summary-card,
+html.dark .quote-card-bubble,
+html.dark .days-grid {
+  background: rgba(29, 21, 38, 0.65) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 45, 112, 0.18) !important; /* Subtle ambient pink tracer edge */
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* High Contrast Clear Typography */
+html.dark h1, 
+html.dark h2, 
+html.dark h3, 
+html.dark .row-meta-text h3,
+html.dark .period-title,
+html.dark .settings-main-title h1 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+html.dark p, 
+html.dark .row-meta-text p,
+html.dark .date-text,
+html.dark .settings-main-title p,
+html.dark .weekdays-grid {
+  color: #bfaecf !important; /* Luminous soft violet text label markers */
+}
+
+/* Ambient Icon Badges Backgrounds */
+html.dark .row-emoji-icon,
+html.dark .quote-icon-decor {
+  background: rgba(92, 82, 203, 0.2) !important;
+  border: 1px solid rgba(92, 82, 203, 0.3) !important;
+}
+
+/* ==========================================
+   2. GLOBAL ICON & COMPONENT ACCENT FIXES
+   ========================================== */
+/* Global Catch-All for Bootstrap Icons & SVG Vectors in Dark Mode */
+html.dark i,
+html.dark .bi,
+html.dark [class^="bi-"],
+html.dark [class*=" bi-"] {
+  color: #ffffff !important;
+}
+
+/* Keep chevron navigation arrows inside your cards styled cleanly */
+html.dark .navigation-arrow,
+html.dark .row-right-action span {
+  color: #bfaecf !important;
+}
+
+/* ==========================================
+   3. CRITICAL NAVBAR STRUCTURAL RE-ANCHORING
+   ========================================== */
+html.dark app-bottom-navbar .bottom-nav,
+html.dark .bottom-navbar-container,
+html.dark .bottom-nav {
+  background: rgba(21, 13, 28, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-top: 1px solid rgba(255, 45, 112, 0.2) !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 70px !important;
+  display: flex !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+  z-index: 9999 !important; /* Forces bar metrics to render on topmost stack layers */
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* High Contrast Interactive Menu Links */
+html.dark app-bottom-navbar .nav-item,
+html.dark .nav-item {
+  color: #a496b5 !important;
+}
+
+html.dark app-bottom-navbar .nav-item.active,
+html.dark .nav-item.active {
+  color: #ff2d70 !important; /* Brilliant signature tracking accent highlight */
+}
+
+/* Glowing Check-In Action Button Framework */
+html.dark .log-today-btn {
+  background: linear-gradient(135deg, #5c52cb 0%, #4a3fca 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(92, 82, 203, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }

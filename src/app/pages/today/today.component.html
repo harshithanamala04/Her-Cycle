@@ -1,6 +1,6 @@
 <div class="today-page">
   <div class="content">
-
+    
     <div class="top-icons">
       <i class="bi bi-gear settings-icon" routerLink="/settings"></i>
       <i class="bi bi-bell" routerLink="/notifications"></i>
@@ -8,28 +8,25 @@
 
     <div class="hero-block-panel">
       <div class="period-card">
-        <p class="period-title">{{ title }}</p>
+        <span class="period-title">{{ title }}</span>
         <h1 class="main-days-display">{{ periodDay }}</h1>
-        <p class="date-text">{{ nextPeriod }} - Next Period</p>
-        
+        <p class="date-text">Current State Information Metrics</p>
         <button class="period-btn" (click)="toggleLogModal(true)">
-          {{ cycleDay <= periodLength ? 'Period Ends' : 'Period Starts' }}
+          Log Period
         </button>
       </div>
     </div>
 
     <div class="dashboard-quote-container">
       <div class="quote-card-bubble">
-        <span class="quote-icon-decor">✨</span>
-        <p class="dashboard-quote-text">
-          “Trust your body’s unique rhythm and whisper words of kindness to yourself today.”
-        </p>
+        <div class="quote-icon-decor">🌸</div>
+        <p class="dashboard-quote-text">Be gentle and understanding with yourself today.</p>
       </div>
     </div>
 
     <div class="prediction-cards-grid">
       
-      <div class="predict-card pink-gradient-card" (click)="navigateToCalendar()">
+      <div class="predict-card pink-gradient-card" routerLink="/calendar">
         <div class="card-date-info">
           <h3>Day {{ cycleDay }}</h3>
           <p>Current Cycle</p>
@@ -37,7 +34,7 @@
         <span class="card-graphic">💧</span>
       </div>
 
-      <div class="predict-card yellow-gradient-card" (click)="navigateToCalendar()">
+      <div class="predict-card yellow-gradient-card" routerLink="/calendar">
         <div class="card-date-info">
           <h3>{{ fertileDate }}</h3>
           <p>Next Fertile</p>
@@ -45,7 +42,7 @@
         <span class="card-graphic">🌱</span>
       </div>
 
-      <div class="predict-card orange-gradient-card" (click)="navigateToCalendar()">
+      <div class="predict-card orange-gradient-card" routerLink="/calendar">
         <div class="card-date-info">
           <h3>{{ ovulationDate }}</h3>
           <p>Ovulation</p>
@@ -60,35 +57,26 @@
         <div class="feeling-text-group">
           <h2>How are you feeling today?</h2>
           <p>Tell us more about your body to get analysis</p>
-          <button class="log-today-btn" (click)="toggleLogModal(true)">✨ Track my Day</button>
+          <button class="log-today-btn" routerLink="/add-entry">✨ Track my Day</button>
         </div>
-        <div class="feeling-graphic">☀️</div>
+        <span class="feeling-graphic">🌞</span>
       </div>
     </div>
 
-  </div>
-</div>
-
-<div class="modal-backdrop" *ngIf="showLogModal" (click)="toggleLogModal(false)">
-  <div class="modal-sheet animate-slide-up" (click)="$event.stopPropagation()">
-    <div class="modal-header">
+  </div> <div class="modal-backdrop" *ngIf="showLogModal" (click)="toggleLogModal(false)">
+    <div class="modal-sheet animate-slide-up" (click)="$event.stopPropagation()">
       <div class="drag-handle"></div>
-      <h2>Log Period Date</h2>
-      <p>🩸 Tap on date to adjust your cycle details</p>
-    </div>
-    <div class="modal-body">
-      <div class="inline-date-picker">
-        <label for="period-start-picker">Select Start Date:</label>
-        <input 
-          type="date" 
-          id="period-start-picker" 
-          [value]="selectedLogDate" 
-          (change)="onDateSelected($any($event.target).value)"
-        >
+      <div class="modal-header">
+        <h2>Log Period Start Date</h2>
+        <p>When did this current cycle start?</p>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button class="save-log-btn" (click)="savePeriodLog()">Save Log</button>
+      <div class="inline-date-picker">
+        <label>Select Calendar Day:</label>
+        <input type="date" [value]="selectedLogDate" #dateInput (change)="onDateSelected(dateInput.value)">
+      </div>
+      <button class="save-log-btn" (click)="savePeriodLog()">Save Log Data</button>
     </div>
   </div>
+
+  <app-bottom-navbar></app-bottom-navbar>
 </div>

@@ -1,25 +1,10 @@
-import {
-  Component,
-  OnInit
-} from '@angular/core';
-
-import {
-  CommonModule
-} from '@angular/common';
-
-import {
-  Auth
-} from '@angular/fire/auth';
-
-import {
-  Firestore,
-  doc,
-  getDoc
-} from '@angular/fire/firestore';
-
-import {
-  BottomNavbarComponent
-} from '../../components/bottom-navbar/bottom-navbar.component';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Auth } from '@angular/fire/auth';
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { BottomNavbarComponent } from '../../components/bottom-navbar/bottom-navbar.component';
+import { CycleSyncService } from '../../services/cycle-sync.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-calendar',
@@ -28,34 +13,23 @@ import {
     CommonModule,
     BottomNavbarComponent
   ],
-  templateUrl:
-    './calendar.component.html',
-  styleUrls: [
-    './calendar.component.css'
-  ]
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.css']
 })
-export class CalendarComponent
-implements OnInit {
+export class CalendarComponent implements OnInit, OnDestroy {
 
   days: number[] = [];
-
-  selectedPeriodDays:
-  number[] = [];
-
-  fertileDays:
-  number[] = [];
-
+  selectedPeriodDays: number[] = [];
+  fertileDays: number[] = [];
   ovulationDay = 0;
-
   currentMonth = '';
-
   currentYear = 0;
-
   today = new Date();
-
   nextPeriod = '';
-
   fertileWindow = '';
+
+  private syncService = inject(CycleSyncService);
+  private syncSubscription!: Subscription;
 
   constructor(
     private auth: Auth,
@@ -63,304 +37,107 @@ implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
     this.setMonthYear();
-
     this.generateDays();
-
     this.loadCycleData();
+
+    // Active real-time subscription channel listens to cross-page state broadcasts
+    this.syncSubscription = this.syncService.cycleUpdated$.subscribe(() => {
+      this.loadCycleData();
+    });
   }
 
-  // Month & Year
   setMonthYear() {
-
     const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
     ];
-
-    this.currentMonth =
-      months[
-        this.today.getMonth()
-      ];
-
-    this.currentYear =
-      this.today.getFullYear();
+    this.currentMonth = months[this.today.getMonth()];
+    this.currentYear = this.today.getFullYear();
   }
 
-  // Generate month days
   generateDays() {
-
-    const year =
-      this.today.getFullYear();
-
-    const month =
-      this.today.getMonth();
-
-    const totalDays =
-      new Date(
-        year,
-        month + 1,
-        0
-      ).getDate();
+    const year = this.today.getFullYear();
+    const month = this.today.getMonth();
+    const totalDays = new Date(year, month + 1, 0).getDate();
 
     this.days = [];
-
-    for (
-      let i = 1;
-      i <= totalDays;
-      i++
-    ) {
-
+    for (let i = 1; i <= totalDays; i++) {
       this.days.push(i);
     }
   }
 
-  // LOAD CYCLE DATA
   async loadCycleData() {
+    const user = this.auth.currentUser;
+    if (!user) return;
 
-    const user =
-      await this.auth.currentUser;
+    const uid = user.uid;
+    const docRef = doc(this.firestore, 'users', uid);
+    const docSnap = await getDoc(docRef);
 
-    if (!user) {
+    if (!docSnap.exists()) return;
 
-      console.log(
-        'User not logged in'
-      );
+    const cycleData = docSnap.data();
+    const startDate = new Date(cycleData['lastPeriodDate']);
+    const periodLength = Number(cycleData['periodLength']);
+    const cycleLength = Number(cycleData['cycleLength']);
 
-      return;
-    }
+    // Map Period Tracking Highlighting Grid Points
+    this.selectedPeriodDays = [];
+    for (let i = 0; i < periodLength; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
 
-    const uid =
-      user.uid;
-
-    // GET DATA FROM FIRESTORE
-    const docRef =
-      doc(
-        this.firestore,
-        'users',
-        uid
-      );
-
-    const docSnap =
-      await getDoc(
-        docRef
-      );
-
-    if (
-      !docSnap.exists()
-    ) {
-
-      console.log(
-        'No cycle data found'
-      );
-
-      return;
-    }
-
-    const cycleData =
-      docSnap.data();
-
-    const startDate =
-      new Date(
-        cycleData['lastPeriodDate']
-      );
-
-    const periodLength =
-      Number(
-        cycleData['periodLength']
-      );
-
-    const cycleLength =
-      Number(
-        cycleData['cycleLength']
-      );
-
-    // PERIOD DAYS
-    this.selectedPeriodDays =
-      [];
-
-    for (
-      let i = 0;
-      i < periodLength;
-      i++
-    ) {
-
-      const date =
-        new Date(
-          startDate
-        );
-
-      date.setDate(
-        startDate.getDate()
-        + i
-      );
-
-      if (
-        date.getMonth()
-        ===
-        this.today.getMonth()
-      ) {
-
-        this.selectedPeriodDays
-        .push(
-          date.getDate()
-        );
+      if (date.getMonth() === this.today.getMonth()) {
+        this.selectedPeriodDays.push(date.getDate());
       }
     }
 
-    // OVULATION DAY
-    const ovulation =
-      new Date(
-        startDate
-      );
+    // Map Ovulation Day Grid Points
+    const ovulation = new Date(startDate);
+    ovulation.setDate(startDate.getDate() + (cycleLength - 14));
+    this.ovulationDay = ovulation.getDate();
 
-    ovulation.setDate(
-      startDate.getDate()
-      + (
-        cycleLength - 14
-      )
-    );
+    // Map Fertile Window Highlighting Grid Boundaries
+    this.fertileDays = [];
+    const daysInMonth = new Date(this.currentYear, this.today.getMonth() + 1, 0).getDate();
 
-    this.ovulationDay =
-      ovulation.getDate();
+    for (let i = -2; i <= 2; i++) {
+      let fertileDay = this.ovulationDay + i;
 
-    // FERTILE DAYS
-    this.fertileDays =
-      [];
-
-    const daysInMonth =
-      new Date(
-        this.currentYear,
-        this.today.getMonth() + 1,
-        0
-      ).getDate();
-
-    for (
-      let i = -2;
-      i <= 2;
-      i++
-    ) {
-
-      let fertileDay =
-        this.ovulationDay + i;
-
-      if (
-        fertileDay < 1
-      ) {
-
-        fertileDay =
-          daysInMonth
-          + fertileDay;
+      if (fertileDay < 1) {
+        fertileDay = daysInMonth + fertileDay;
       }
-
-      if (
-        fertileDay >
-        daysInMonth
-      ) {
-
-        fertileDay =
-          fertileDay
-          - daysInMonth;
+      if (fertileDay > daysInMonth) {
+        fertileDay = fertileDay - daysInMonth;
       }
-
-      this.fertileDays
-        .push(
-          fertileDay
-        );
+      this.fertileDays.push(fertileDay);
     }
 
-    // Fertile Window
-    this.fertileWindow =
-      `${this.fertileDays[0]}
-       - ${this.fertileDays[4]}`;
+    this.fertileWindow = `${this.fertileDays[0]} - ${this.fertileDays[4]}`;
 
-    // NEXT PERIOD
-    const next =
-      new Date(
-        startDate
-      );
-
-    next.setDate(
-      startDate.getDate()
-      + cycleLength
-    );
-
-    this.nextPeriod =
-      next.toDateString();
+    const next = new Date(startDate);
+    next.setDate(startDate.getDate() + cycleLength);
+    this.nextPeriod = next.toDateString();
   }
 
-  // Change Period Day
-  selectDay(
-    day: number
-  ) {
-
-    const index =
-      this.selectedPeriodDays
-      .indexOf(day);
-
-    if (
-      index > -1
-    ) {
-
-      this.selectedPeriodDays
-      .splice(
-        index,
-        1
-      );
-
+  selectDay(day: number) {
+    const index = this.selectedPeriodDays.indexOf(day);
+    if (index > -1) {
+      this.selectedPeriodDays.splice(index, 1);
     } else {
-
-      this.selectedPeriodDays
-      .push(day);
+      this.selectedPeriodDays.push(day);
     }
   }
 
-  isPeriodDay(
-    day: number
-  ): boolean {
+  isPeriodDay(day: number): boolean { return this.selectedPeriodDays.includes(day); }
+  isFertileDay(day: number): boolean { return this.fertileDays.includes(day); }
+  isOvulationDay(day: number): boolean { return day === this.ovulationDay; }
+  isToday(day: number): boolean { return day === this.today.getDate(); }
 
-    return this
-      .selectedPeriodDays
-      .includes(day);
-  }
-
-  isFertileDay(
-    day: number
-  ): boolean {
-
-    return this
-      .fertileDays
-      .includes(day);
-  }
-
-  isOvulationDay(
-    day: number
-  ): boolean {
-
-    return (
-      day ===
-      this.ovulationDay
-    );
-  }
-
-  isToday(
-    day: number
-  ): boolean {
-
-    return (
-      day ===
-      this.today.getDate()
-    );
+  ngOnDestroy(): void {
+    if (this.syncSubscription) {
+      this.syncSubscription.unsubscribe();
+    }
   }
 }
