@@ -1,138 +1,75 @@
 <div class="settings-page">
 
-  <!-- Header -->
   <div class="header">
-
-    <h1>
-      Settings
-    </h1>
-
-    <p>
-      Manage your account & cycle
-    </p>
-
+    <h1>Settings</h1>
+    <p>Manage your account & cycle</p>
   </div>
 
-  <!-- Profile Card -->
   <div class="profile-card">
-
-    <div class="profile-icon">
-      👩
-    </div>
-
+    <div class="profile-icon">👩</div>
     <div class="profile-info">
-
-      <h2>
-        My Account
-      </h2>
-
-      <p>
-        {{ userEmail }}
-      </p>
-
+      <h2>My Account</h2>
+      <p>{{ userEmail }}</p>
     </div>
-
   </div>
 
-  <!-- Settings Menu -->
   <div class="settings-card">
 
-    <div
-      class="setting-row"
-      routerLink="/setup-cycle">
-
+    <div class="setting-row" routerLink="/setup-cycle">
       <div class="left">
-
-        <span class="icon">
-          🩸
-        </span>
-
+        <span class="icon">🩸</span>
         <div>
-
-          <h3>
-            Cycle Settings
-          </h3>
-
-          <p>
-            Edit period details
-          </p>
-
+          <h3>Cycle Settings</h3>
+          <p>Edit period details</p>
         </div>
-
       </div>
-
-      <span>
-        →
-      </span>
-
+      <span>→</span>
     </div>
 
     <div class="divider"></div>
 
     <div class="setting-row">
-
       <div class="left">
-
-        <span class="icon">
-          🔔
-        </span>
-
+        <span class="icon">🔔</span>
         <div>
-
-          <h3>
-            Notifications
-          </h3>
-
+          <h3>Notifications</h3>
           <p>
-            Period reminder
+            {{ notificationService.isEnabled() ? 'Reminders are active' : 'Period reminder' }}
           </p>
-
         </div>
-
       </div>
-
-      <input type="checkbox">
-
+      <input 
+        type="checkbox"
+        [checked]="notificationService.isEnabled()"
+        (change)="notificationService.toggleNotifications($any($event.target).checked)"
+      >
     </div>
 
     <div class="divider"></div>
 
     <div class="setting-row">
-
       <div class="left">
-
         <span class="icon">
-          🌙
+          {{ themeService.isDarkMode() ? '☀️' : '🌙' }}
         </span>
-
         <div>
-
-          <h3>
-            Dark Mode
-          </h3>
-
+          <h3>Dark Mode</h3>
           <p>
-            Coming soon
+            {{ themeService.isDarkMode() ? 'Enabling light theme' : 'Reduce screen glare' }}
           </p>
-
         </div>
-
       </div>
-
-      <input type="checkbox"
-      disabled>
-
+      <input 
+        type="checkbox" 
+        [checked]="themeService.isDarkMode()" 
+        (change)="themeService.toggleTheme()"
+      >
     </div>
 
   </div>
 
-  <!-- Logout -->
-  <button
-    class="logout-btn"
-    (click)="logout()">
-
+  <button class="logout-btn" (click)="logout()">
     Logout
-
   </button>
 
 </div>
