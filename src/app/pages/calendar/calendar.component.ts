@@ -9,131 +9,143 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [
-    CommonModule,
-    BottomNavbarComponent
-  ],
+  imports: [CommonModule, BottomNavbarComponent],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit, OnDestroy {
 
-  days: number[] = [];
-  selectedPeriodDays: number[] = [];
-  fertileDays: number[] = [];
-  ovulationDay = 0;
-  currentMonth = '';
-  currentYear = 0;
-  today = new Date();
-  nextPeriod = '';
-  fertileWindow = '';
+  prevMonthDays: number[] = [];
+  currentMonthDays: number[] = [];
+  nextMonthDays: number[] = [];
+
+  prevMonthPadding: number[] = [];
+  currentMonthPadding: number[] = [];
+  nextMonthPadding: number[] = [];
+
+  prevMonthName = ''; prevMonthYear = 0; prevMonthIndex = 0;
+  currentMonthName = ''; currentMonthYear = 0; currentMonthIndex = 0;
+  nextMonthName = ''; nextMonthYear = 0; nextMonthIndex = 0;
+
+  periodDateStrings: string[] = [];
+  fertileDateStrings: string[] = [];
+  ovulationDateStrings: string[] = [];
 
   private syncService = inject(CycleSyncService);
   private syncSubscription!: Subscription;
+  private auth = inject(Auth);
+  private firestore = inject(Firestore);
 
-  constructor(
-    private auth: Auth,
-    private firestore: Firestore
-  ) {}
+  monthsList = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
   ngOnInit(): void {
-    this.setMonthYear();
-    this.generateDays();
+    this.calculateThreeMonthTimeline();
     this.loadCycleData();
 
-    // Active real-time subscription channel listens to cross-page state broadcasts
     this.syncSubscription = this.syncService.cycleUpdated$.subscribe(() => {
       this.loadCycleData();
     });
   }
 
-  setMonthYear() {
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    this.currentMonth = months[this.today.getMonth()];
-    this.currentYear = this.today.getFullYear();
+  calculateThreeMonthTimeline() {
+    const today = new Date();
+    
+    this.currentMonthIndex = today.getMonth();
+    this.currentMonthYear = today.getFullYear();
+    this.currentMonthName = this.monthsList[this.currentMonthIndex];
+    this.currentMonthDays = this.getDaysInMonth(this.currentMonthYear, this.currentMonthIndex);
+    this.currentMonthPadding = this.getWeekdayPadding(this.currentMonthYear, this.currentMonthIndex);
+
+    const prevDate = new Date(this.currentMonthYear, this.currentMonthIndex - 1, 1);
+    this.prevMonthIndex = prevDate.getMonth();
+    this.prevMonthYear = prevDate.getFullYear();
+    this.prevMonthName = this.monthsList[this.prevMonthIndex];
+    this.prevMonthDays = this.getDaysInMonth(this.prevMonthYear, this.prevMonthIndex);
+    this.prevMonthPadding = this.getWeekdayPadding(this.prevMonthYear, this.prevMonthIndex);
+
+    const nextDate = new Date(this.currentMonthYear, this.currentMonthIndex + 1, 1);
+    this.nextMonthIndex = nextDate.getMonth();
+    this.nextMonthYear = nextDate.getFullYear();
+    this.nextMonthName = this.monthsList[this.nextMonthIndex];
+    this.nextMonthDays = this.getDaysInMonth(this.nextMonthYear, this.nextMonthIndex);
+    this.nextMonthPadding = this.getWeekdayPadding(this.nextMonthYear, this.nextMonthIndex);
   }
 
-  generateDays() {
-    const year = this.today.getFullYear();
-    const month = this.today.getMonth();
-    const totalDays = new Date(year, month + 1, 0).getDate();
+  getDaysInMonth(year: number, month: number): number[] {
+    const count = new Date(year, month + 1, 0).getDate();
+    return Array.from({ length: count }, (_, i) => i + 1);
+  }
 
-    this.days = [];
-    for (let i = 1; i <= totalDays; i++) {
-      this.days.push(i);
-    }
+  getWeekdayPadding(year: number, month: number): number[] {
+    const startDayOfWeek = new Date(year, month, 1).getDay();
+    return Array.from({ length: startDayOfWeek }, (_, i) => i);
   }
 
   async loadCycleData() {
     const user = this.auth.currentUser;
     if (!user) return;
 
-    const uid = user.uid;
-    const docRef = doc(this.firestore, 'users', uid);
+    const docRef = doc(this.firestore, 'users', user.uid);
     const docSnap = await getDoc(docRef);
-
     if (!docSnap.exists()) return;
 
     const cycleData = docSnap.data();
-    const startDate = new Date(cycleData['lastPeriodDate']);
-    const periodLength = Number(cycleData['periodLength']);
-    const cycleLength = Number(cycleData['cycleLength']);
+    const lastPeriodStr = cycleData['lastPeriodDate']; 
+    const periodLength = Number(cycleData['periodLength'] || 5);
+    const cycleLength = Number(cycleData['cycleLength'] || 28);
 
-    // Map Period Tracking Highlighting Grid Points
-    this.selectedPeriodDays = [];
-    for (let i = 0; i < periodLength; i++) {
-      const date = new Date(startDate);
-      date.setDate(startDate.getDate() + i);
+    if (!lastPeriodStr) return;
 
-      if (date.getMonth() === this.today.getMonth()) {
-        this.selectedPeriodDays.push(date.getDate());
+    this.periodDateStrings = [];
+    this.fertileDateStrings = [];
+    this.ovulationDateStrings = [];
+
+    let currentCycleStart = new Date(lastPeriodStr);
+
+    for (let iteration = 0; iteration < 4; iteration++) {
+      for (let p = 0; p < periodLength; p++) {
+        const d = new Date(currentCycleStart);
+        d.setDate(currentCycleStart.getDate() + p);
+        this.periodDateStrings.push(this.formatDateKey(d));
       }
-    }
 
-    // Map Ovulation Day Grid Points
-    const ovulation = new Date(startDate);
-    ovulation.setDate(startDate.getDate() + (cycleLength - 14));
-    this.ovulationDay = ovulation.getDate();
+      const ovulationDay = new Date(currentCycleStart);
+      ovulationDay.setDate(currentCycleStart.getDate() + (cycleLength - 14));
+      this.ovulationDateStrings.push(this.formatDateKey(ovulationDay));
 
-    // Map Fertile Window Highlighting Grid Boundaries
-    this.fertileDays = [];
-    const daysInMonth = new Date(this.currentYear, this.today.getMonth() + 1, 0).getDate();
-
-    for (let i = -2; i <= 2; i++) {
-      let fertileDay = this.ovulationDay + i;
-
-      if (fertileDay < 1) {
-        fertileDay = daysInMonth + fertileDay;
+      for (let f = -2; f <= 2; f++) {
+        const fd = new Date(ovulationDay);
+        fd.setDate(ovulationDay.getDate() + f);
+        this.fertileDateStrings.push(this.formatDateKey(fd));
       }
-      if (fertileDay > daysInMonth) {
-        fertileDay = fertileDay - daysInMonth;
-      }
-      this.fertileDays.push(fertileDay);
-    }
 
-    this.fertileWindow = `${this.fertileDays[0]} - ${this.fertileDays[4]}`;
-
-    const next = new Date(startDate);
-    next.setDate(startDate.getDate() + cycleLength);
-    this.nextPeriod = next.toDateString();
-  }
-
-  selectDay(day: number) {
-    const index = this.selectedPeriodDays.indexOf(day);
-    if (index > -1) {
-      this.selectedPeriodDays.splice(index, 1);
-    } else {
-      this.selectedPeriodDays.push(day);
+      currentCycleStart.setDate(currentCycleStart.getDate() + cycleLength);
     }
   }
 
-  isPeriodDay(day: number): boolean { return this.selectedPeriodDays.includes(day); }
-  isFertileDay(day: number): boolean { return this.fertileDays.includes(day); }
-  isOvulationDay(day: number): boolean { return day === this.ovulationDay; }
-  isToday(day: number): boolean { return day === this.today.getDate(); }
+  formatDateKey(date: Date): string {
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+  }
+
+  isPeriodDay(day: number, month: number, year: number): boolean {
+    return this.periodDateStrings.includes(`${year}-${month}-${day}`);
+  }
+
+  isFertileDay(day: number, month: number, year: number): boolean {
+    return this.fertileDateStrings.includes(`${year}-${month}-${day}`);
+  }
+
+  isOvulationDay(day: number, month: number, year: number): boolean {
+    return this.ovulationDateStrings.includes(`${year}-${month}-${day}`);
+  }
+
+  isToday(day: number, month: number, year: number): boolean {
+    const now = new Date();
+    return now.getDate() === day && now.getMonth() === month && now.getFullYear() === year;
+  }
 
   ngOnDestroy(): void {
     if (this.syncSubscription) {

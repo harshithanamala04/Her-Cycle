@@ -5,16 +5,13 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class CycleSyncService {
-  // A lightweight event broadcaster channel
   private cycleUpdatedSource = new Subject<void>();
-  
-  // Observable stream components can subscribe to
+
+  // This is the stream your components subscribe to
   cycleUpdated$ = this.cycleUpdatedSource.asObservable();
 
-  /**
-   * Broadcasts a ping notification to all listening views
-   */
-  notifyCycleChanged(): void {
+  // THIS IS THE TRIGGER METHOD: Call this to announce changes!
+  emitCycleUpdate() {
     this.cycleUpdatedSource.next();
   }
 }

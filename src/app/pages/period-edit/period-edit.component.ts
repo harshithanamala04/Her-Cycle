@@ -1,139 +1,127 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
+import { FormsModule } from '@angular/forms';
 import { Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
+import { Router, RouterModule } from '@angular/router';
 import { CycleSyncService } from '../../services/cycle-sync.service';
 
 @Component({
   selector: 'app-period-edit',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './period-edit.component.html',
   styleUrls: ['./period-edit.component.css']
 })
 export class PeriodEditComponent implements OnInit {
+  // Core Database Values
+  lastPeriodDate: string = '';
+  cycleLength: number = 28;
+  periodLength: number = 5;
+
+  // Custom Calendar-Picker View States Needed By Your Template
+  currentMonthName: string = '';
   days: number[] = [];
-  selectedDays: number[] = [];
-  
-  // Range tracking boundary variables
-  rangeStartDay: number | null = null;
-  rangeEndDay: number | null = null;
+  selectedDayNumber: number | null = null;
+  currentYear: number = 0;
+  currentMonthIndex: number = 0;
 
-  uid: string = '';
-  currentMonthName: string = 'May';
-
-  private router = inject(Router);
-  private auth = inject(Auth);
   private firestore = inject(Firestore);
+  private auth = inject(Auth);
+  private router = inject(Router);
   private syncService = inject(CycleSyncService);
 
-  ngOnInit(): void {
-    this.generateMonthDays();
+  monthsList = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
+  ngOnInit(): void {
     this.auth.onAuthStateChanged(async (user) => {
       if (!user) {
         this.router.navigate(['/']);
         return;
       }
-      this.uid = user.uid;
-      await this.loadUserPeriodData();
+      this.initializeCalendarView();
+      await this.loadCurrentUserSettings(user.uid);
     });
   }
 
-  generateMonthDays(): void {
-    this.days = Array.from({ length: 31 }, (_, i) => i + 1);
+  initializeCalendarView() {
+    const today = new Date();
+    this.currentYear = today.getFullYear();
+    this.currentMonthIndex = today.getMonth();
+    this.currentMonthName = this.monthsList[this.currentMonthIndex];
+    
+    // Calculate total days in current month to generate array for *ngFor="let day of days"
+    const totalDays = new Date(this.currentYear, this.currentMonthIndex + 1, 0).getDate();
+    this.days = Array.from({ length: totalDays }, (_, i) => i + 1);
   }
 
-  async loadUserPeriodData() {
+  async loadCurrentUserSettings(uid: string) {
     try {
-      const docRef = doc(this.firestore, 'users', this.uid);
+      const docRef = doc(this.firestore, 'users', uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const data = docSnap.data();
-        this.selectedDays = data['selectedPeriodDays'] || [];
-        
-        // Reconstruct visual start/end ranges from stored data if present
-        if (this.selectedDays.length > 0) {
-          const sorted = [...this.selectedDays].sort((a, b) => a - b);
-          this.rangeStartDay = sorted[0];
-          this.rangeEndDay = sorted[sorted.length - 1];
+        this.lastPeriodDate = data['lastPeriodDate'] || '';
+        this.cycleLength = Number(data['cycleLength'] || 28);
+        this.periodLength = Number(data['periodLength'] || 5);
+
+        // Pre-select day highlight if date matches current active month view frame
+        if (this.lastPeriodDate) {
+          const parsedDate = new Date(this.lastPeriodDate);
+          if (parsedDate.getFullYear() === this.currentYear && parsedDate.getMonth() === this.currentMonthIndex) {
+            this.selectedDayNumber = parsedDate.getDate();
+          }
         }
       }
     } catch (error) {
-      console.error('Error loading period dates:', error);
+      console.error('Error loading user profile settings:', error);
     }
   }
 
-  /**
-   * SMART RANGE ENGINE: Builds continuous selections instead of scattered individual dots
-   */
-  handleDaySelection(day: number): void {
-    // Case 1: No date picked yet, or both boundaries are already filled -> Set a brand new Start Point
-    if (!this.rangeStartDay || (this.rangeStartDay && this.rangeEndDay)) {
-      this.rangeStartDay = day;
-      this.rangeEndDay = null;
-      this.selectedDays = [day];
-    } 
-    // Case 2: Start Point exists and clicked date is before it -> Reset start day back to this new earlier point
-    else if (day < this.rangeStartDay) {
-      this.rangeStartDay = day;
-      this.selectedDays = [day];
-    } 
-    // Case 3: Clicked date is after our Start Point -> Complete the range block and auto-fill intervening cells
-    else {
-      this.rangeEndDay = day;
-      this.selectedDays = [];
-      
-      // Auto-fill all continuous intermediate consecutive range blocks seamlessly
-      for (let i = this.rangeStartDay; i <= this.rangeEndDay; i++) {
-        this.selectedDays.push(i);
-      }
-    }
+  // TEMPLATE INTERACTIVE LINK: Handles selecting a day from your matrix grid
+  handleDaySelection(day: number) {
+    this.selectedDayNumber = day;
+    // Format calendar selection into standard database string layout 'YYYY-MM-DD'
+    const monthString = String(this.currentMonthIndex + 1).padStart(2, '0');
+    const dayString = String(day).padStart(2, '0');
+    this.lastPeriodDate = `${this.currentYear}-${monthString}-${dayString}`;
   }
 
+  // TEMPLATE INTERACTIVE LINK: Handles active day cell theme class assignment highlights
   isDaySelected(day: number): boolean {
-    return this.selectedDays.includes(day);
+    return this.selectedDayNumber === day;
   }
 
-  goBackToToday(): void {
+  // TEMPLATE INTERACTIVE LINK: Action back navigation route controller handler
+  goBackToToday() {
     this.router.navigate(['/today']);
   }
 
-  /**
-   * UPDATED SAVE BLOCK: Saves custom ranges and dynamically re-calculates periodLength parameters
-   */
+  // TEMPLATE INTERACTIVE LINK: Handles updating parameters and running state broadcasts
   async savePeriodChanges() {
-    if (!this.uid || !this.rangeStartDay) {
-      alert('Please select at least a period start date on the calendar matrix first!');
-      return;
-    }
+    const user = this.auth.currentUser;
+    if (!user) return;
 
     try {
-      const docRef = doc(this.firestore, 'users', this.uid);
+      const docRef = doc(this.firestore, 'users', user.uid);
       
-      // 1. Reconstruct a valid structural calendar Date object based on the chosen start day
-      const todayDate = new Date();
-      const updatedPeriodStartDate = new Date(todayDate.getFullYear(), todayDate.getMonth(), this.rangeStartDay);
-      
-      // 2. Compute the dynamic length of the selected continuous range span block safely
-      const dynamicPeriodLength = this.selectedDays.length;
-
-      // Update the fields in Firestore so that your Today page gets the calculation metrics right
+      // 1. Save data updates to Firestore
       await updateDoc(docRef, {
-        selectedPeriodDays: this.selectedDays,
-        lastPeriodDate: updatedPeriodStartDate.toISOString().split('T')[0], // Syncs base starting point field
-        periodLength: dynamicPeriodLength // Overwrites old hardcoded lengths with the live selection total
+        lastPeriodDate: this.lastPeriodDate,
+        cycleLength: this.cycleLength,
+        periodLength: this.periodLength
       });
 
-      // Notify cross-page active listeners to sync views
-      this.syncService.notifyCycleChanged();
+      // 2. Broadcast updates instantly down the application pipeline to the Today component
+      this.syncService.emitCycleUpdate();
 
-      alert('Period selection parameters updated successfully! ✨');
+      // 3. Navigate user back safely to the centered metrics dashboard
       this.router.navigate(['/today']);
     } catch (error) {
-      console.error('Error saving period range structures:', error);
-      alert('Failed to save changes. Please try again.');
+      console.error('Database configuration update transaction error:', error);
     }
   }
 }

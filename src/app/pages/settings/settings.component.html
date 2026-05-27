@@ -5,39 +5,27 @@
       <span class="settings-back-btn" (click)="goBackToToday()">←</span>
       <div class="settings-main-title">
         <h1>Settings</h1>
-        <p>Manage your account & cycle</p>
+        <p>Manage your account & preferences</p>
       </div>
-      <span class="header-spacer"></span> </div>
+      <span class="header-spacer"></span>
+    </div>
 
     <div class="account-header-card">
       <div class="profile-avatar-wrapper">
         <img 
-          [src]="'https://api.dicebear.com/7.x/adventurer/svg?seed=' + (userName || 'Guest')" 
+          [src]="'https://api.dicebear.com/7.x/adventurer/svg?seed=' + (userName ? userName : 'DefaultUser')" 
           alt="Profile Avatar" 
           class="profile-avatar"
         >
       </div>
       <div class="profile-details-group">
-        <h2>{{ userName || 'Loading Account...' }}</h2>
+        <h2>{{ userName || 'Cycle Tracker User' }}</h2>
         <p>{{ userEmail || 'Fetching details...' }}</p>
       </div>
     </div>
 
     <div class="settings-options-list">
       
-      <div class="settings-row" routerLink="/period-edit">
-        <div class="row-left-content">
-          <span class="row-emoji-icon">🩸</span>
-          <div class="row-meta-text">
-            <h3>Cycle Settings</h3>
-            <p>Edit period details</p>
-          </div>
-        </div>
-        <div class="row-right-action">
-          <span class="navigation-arrow">→</span>
-        </div>
-      </div>
-
       <div class="settings-row">
         <div class="row-left-content">
           <span class="row-emoji-icon">🌙</span>
@@ -59,6 +47,10 @@
       </div>
 
     </div>
+
+    <button class="settings-logout-btn" (click)="handleSignOutRequest()">
+      <span class="logout-btn-emoji">🚪</span> Sign Out
+    </button>
 
   </div>
   

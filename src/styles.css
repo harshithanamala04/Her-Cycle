@@ -6,17 +6,18 @@ html.dark body {
   color: #f3ebfc !important;
 }
 
-/* Base View Layout Page Wrappers Sync (UPDATED: Added .period-edit-page here!) */
+/* Base View Layout Page Wrappers Sync */
 html.dark .settings-page,
 html.dark .today-page,
 html.dark .calendar-page,
 html.dark .self-care-page,
 html.dark .analysis-page,
-html.dark .period-edit-page {
+html.dark .period-edit-page,
+html.dark .notifications-page {
   background-color: #0d0714 !important;
 }
 
-/* Premium UI Glassmorphic Panels - Replaces muddy solid grey boxes */
+/* Premium UI Glassmorphic Panels */
 html.dark .account-header-card,
 html.dark .settings-options-list,
 html.dark .feeling-card,
@@ -26,28 +27,47 @@ html.dark .days-grid {
   background: rgba(29, 21, 38, 0.65) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255, 45, 112, 0.18) !important; /* Subtle ambient pink tracer edge */
+  border: 1px solid rgba(255, 45, 112, 0.18) !important; /* Ambient pink tracer edge */
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* High Contrast Clear Typography */
+/* ==========================================
+   2. HIGH-PRIORITY TEXT VISIBILITY HOOKS
+   ========================================== */
+/* Force headings to turn bright white in dark mode */
 html.dark h1, 
 html.dark h2, 
 html.dark h3, 
 html.dark .row-meta-text h3,
 html.dark .period-title,
 html.dark .settings-main-title h1,
+html.dark .notifications-main-title h1,
 html.dark .month-title {
   color: #ffffff !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* Force subtext labels to turn clear light violet/white */
 html.dark p, 
 html.dark .row-meta-text p,
-html.dark .date-text,
+html.dark .date-text, 
 html.dark .settings-main-title p,
-html.dark .weekdays-grid {
-  color: #bfaecf !important; /* Luminous soft violet text label markers */
+html.dark .notifications-main-title p,
+html.dark .weekdays-grid,
+html.dark .dashboard-quote-text {
+  color: #bfaecf !important;
+}
+
+/* ==========================================
+   3. FORCE HIGH-CONTRAST HEADER BACK ARROWS
+   ========================================== */
+html.dark .settings-back-btn,
+html.dark .notifications-back-btn,
+html.dark .back-arrow-btn,
+html.dark .navigation-arrow,
+html.dark .row-right-action span {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  font-weight: 700 !important;
 }
 
 /* Ambient Icon Badges Backgrounds */
@@ -57,26 +77,14 @@ html.dark .quote-icon-decor {
   border: 1px solid rgba(92, 82, 203, 0.3) !important;
 }
 
-/* ==========================================
-   2. GLOBAL ICON & COMPONENT ACCENT FIXES
-   ========================================== */
-/* Global Catch-All for Bootstrap Icons & SVG Vectors in Dark Mode */
-html.dark i,
-html.dark .bi,
-html.dark [class^="bi-"],
-html.dark [class*=" bi-"] {
-  color: #ffffff !important;
-}
-
-/* Keep chevron navigation arrows inside your cards styled cleanly */
-html.dark .navigation-arrow,
-html.dark .row-right-action span,
-html.dark .back-arrow-btn {
-  color: #ffffff !important;
-}
+/* Dynamic Accent Profile Badges for Dark Mode */
+html.dark .period-alert-badge { background: rgba(255, 45, 112, 0.2) !important; }
+html.dark .fertile-alert-badge { background: rgba(234, 179, 8, 0.2) !important; }
+html.dark .ovulation-alert-badge { background: rgba(139, 92, 246, 0.2) !important; }
+html.dark .water-reminder-badge { background: rgba(56, 189, 248, 0.2) !important; }
 
 /* ==========================================
-   3. CRITICAL NAVBAR STRUCTURAL RE-ANCHORING
+   4. NAVBAR STRUCTURAL RE-ANCHORING
    ========================================== */
 html.dark app-bottom-navbar .bottom-nav,
 html.dark .bottom-navbar-container,
@@ -93,25 +101,41 @@ html.dark .bottom-nav {
   display: flex !important;
   justify-content: space-around !important;
   align-items: center !important;
-  z-index: 9999 !important; /* Forces bar metrics to render on topmost stack layers */
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5) !important;
+  z-index: 9999 !important;
 }
 
-/* High Contrast Interactive Menu Links */
-html.dark app-bottom-navbar .nav-item,
-html.dark .nav-item {
-  color: #a496b5 !important;
+html.dark app-bottom-navbar .nav-item { color: #a496b5 !important; }
+html.dark app-bottom-navbar .nav-item.active { color: #ff2d70 !important; }
+
+/* ==========================================
+   5. CRITICAL CALENDAR CELL VISIBILITY OVERRIDES
+   ========================================== */
+html.dark .calendar-page .day-cell {
+  color: #ffffff !important; /* Forces all calendar day numbers to be visible white */
 }
 
-html.dark app-bottom-navbar .nav-item.active,
-html.dark .nav-item.active {
-  color: #ff2d70 !important; /* Brilliant signature tracking accent highlight */
+html.dark .calendar-page .day-cell.empty-cell {
+  color: transparent !important;
+  background: transparent !important;
 }
 
-/* Glowing Check-In Action Button Framework */
-html.dark .log-today-btn {
-  background: linear-gradient(135deg, #5c52cb 0%, #4a3fca 100%) !important;
+html.dark .calendar-page .day-cell.is-today {
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(92, 82, 203, 0.4) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 45, 112, 0.22) !important;
+  border: 2px solid #ff2d70 !important;
+}
+
+html.dark .calendar-page .day-cell.is-period {
+  color: #ffffff !important;
+  background-color: #ff2d70 !important;
+}
+
+html.dark .calendar-page .day-cell.is-fertile {
+  color: #e0e7ff !important;
+  background-color: #1e1b4b !important;
+}
+
+html.dark .calendar-page .day-cell.is-ovulation {
+  color: #fef08a !important;
+  background-color: #423205 !important;
 }

@@ -1,10 +1,7 @@
-/* ==========================================
-   1. SCREEN MATRIX WRAPPERS & SHELLS
-   ========================================== */
 .calendar-page {
   min-height: 100vh;
   background-color: #f4f0fb;
-  padding: 32px 20px 160px 20px; /* Generous bottom spacing creates clearance for navbar container */
+  padding: 32px 20px 160px 20px;
   box-sizing: border-box;
   transition: background-color 0.3s ease;
 }
@@ -14,48 +11,51 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 28px;
 }
 
-/* ==========================================
-   2. TEXT HEADERS ELEMENTS
-   ========================================== */
+.month-block-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.month-divider {
+  border: 0;
+  height: 1px;
+  background: rgba(142, 131, 156, 0.2);
+  margin: 12px 0;
+}
+
 .calendar-header {
-  text-align: center;
-  margin-bottom: 4px;
+  text-align: left;
+  padding-left: 4px;
 }
 
 .calendar-header h1 {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   color: #111111;
-  margin: 0 0 4px 0;
+  margin: 0 0 2px 0;
 }
 
 .calendar-header .subtitle-text {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: #8e839c;
   margin: 0;
 }
 
-/* ==========================================
-   3. WEEK LABELS ROW HEADERS
-   ========================================== */
 .weekdays-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr); /* Forms perfect 7 columns structure */
+  grid-template-columns: repeat(7, 1fr);
   text-align: center;
   font-weight: 700;
   font-size: 13px;
   color: #8e839c;
   padding: 0 4px;
-  margin-bottom: -4px;
 }
 
-/* ==========================================
-   4. CORE 7-COLUMN DAYS GRID MATRIX
-   ========================================== */
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr); 
@@ -69,7 +69,7 @@
 }
 
 .day-cell {
-  aspect-ratio: 1; /* Guarantees blocks render as perfect clean squares */
+  aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,54 +77,45 @@
   font-weight: 600;
   color: #2d2238;
   border-radius: 14px;
-  cursor: pointer;
   position: relative;
   transition: all 0.2s ease;
   box-sizing: border-box;
 }
 
-.day-cell:hover {
-  background: #f7f3fd;
-  transform: scale(1.05);
+.day-cell.empty-cell {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-/* Active Highlight Outline Indicator for Today's Real Calendar Date */
+.day-cell:not(.empty-cell):hover {
+  background: #f7f3fd;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
 .day-cell.is-today {
   border: 2px solid #5c52cb;
   color: #5c52cb;
 }
 
-/* ==========================================
-   5. CONDITION STATUS TRACKING COLOR OVERRIDES (LIGHT THEME)
-   ========================================== */
-
-/* 1. Period Days -> Branded Tracking Pink */
 .day-cell.is-period {
   background-color: #ff2d70 !important;
   color: #ffffff !important;
   box-shadow: 0 4px 10px rgba(255, 45, 112, 0.25);
-  font-weight: 700;
 }
 
-/* 2. Fertile Window -> Beautiful Soft Periwinkle Purple */
 .day-cell.is-fertile {
   background-color: #e0e7ff !important;
   color: #3730a3 !important;
-  font-weight: 600;
 }
 
-/* 3. Peak Ovulation Day -> Rich Pastel Yellow */
 .day-cell.is-ovulation {
   background-color: #fef08a !important;
   color: #854d0e !important;
   border: 2px solid #eab308;
-  font-weight: 700;
-  box-shadow: 0 4px 10px rgba(234, 179, 8, 0.15);
 }
 
-/* ==========================================
-   6. SUMMARY LEGEND PANEL
-   ========================================== */
 .summary-card {
   background: #ffffff;
   border-radius: 24px;
@@ -149,7 +140,6 @@
   flex-shrink: 0;
 }
 
-/* Sync Legend dots to match custom grid colors exactly */
 .legend-dot.period-dot { background-color: #ff2d70; }
 .legend-dot.fertile-dot { background-color: #e0e7ff; border: 1px solid #c7d2fe; }
 .legend-dot.ovulation-dot { background-color: #fef08a; border: 1px solid #eab308; }
@@ -165,41 +155,4 @@
   font-size: 13px;
   color: #777777;
   margin: 0;
-}
-
-/* ==========================================
-   7. EXTRA NEON HIGH-CONTRAST FOR DARK MODE 
-   ========================================== */
-:root.dark .day-cell.is-period {
-  background-color: #ff2d70 !important;
-  color: #ffffff !important;
-}
-
-/* Dark Mode specific fertile adjustment to maintain visibility */
-:root.dark .day-cell.is-fertile {
-  background-color: #1e1b4b !important;
-  color: #e0e7ff !important;
-  border: 1px dashed rgba(224, 231, 255, 0.3);
-}
-
-/* Dark Mode specific ovulation adjustment to maintain visibility */
-:root.dark .day-cell.is-ovulation {
-  background-color: #423205 !important;
-  color: #fef08a !important;
-  border: 2px solid #a16207;
-}
-
-/* ==========================================
-   8. INTERACTIVE ABSOLUTE NAVBAR STACKING ASSURANCE
-   ========================================== */
-.calendar-page app-bottom-navbar,
-.calendar-page .bottom-nav,
-.calendar-page .bottom-navbar-container {
-  position: fixed !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 70px !important;
-  z-index: 99999 !important;
-  display: flex !important;
 }

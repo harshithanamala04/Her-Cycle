@@ -2,8 +2,8 @@
   <div class="auth-card-wrapper">
     
     <div class="auth-brand-header">
-      <h1 class="app-main-title">MyCalendar</h1>
-      <p class="app-sub-caption">Period Tracking App</p>
+      <h1 class="app-main-title">Create Account</h1>
+      <p class="app-sub-caption">Join MyCalendar to track your cycle</p>
     </div>
 
     <div class="web-error-banner" [class.show-error]="errorMessage">
@@ -15,10 +15,23 @@
       
       <div class="input-field-container">
         <input 
+          type="text" 
+          [(ngModel)]="name" 
+          name="name" 
+          placeholder="Full Name"
+          class="auth-text-input"
+          [class.input-error-border]="hasInputFieldError"
+          (input)="clearValidationState()"
+          required
+        >
+      </div>
+
+      <div class="input-field-container">
+        <input 
           type="email" 
           [(ngModel)]="email" 
           name="email" 
-          placeholder="Email"
+          placeholder="Email Address"
           class="auth-text-input"
           [class.input-error-border]="hasInputFieldError"
           (input)="clearValidationState()"
@@ -31,33 +44,29 @@
           type="password" 
           [(ngModel)]="password" 
           name="password" 
-          placeholder="Password"
+          placeholder="Create Password"
           class="auth-text-input"
           [class.input-error-border]="hasInputFieldError"
           (input)="clearValidationState()"
           required
         >
-        
-        <div class="forgot-password-link-row">
-          <span class="action-link-anchor" routerLink="/forgot-password">Forgot Password?</span>
-        </div>
       </div>
 
       <div class="form-actions-column">
         <button 
           type="submit" 
           class="auth-primary-btn login-btn" 
-          [class.shake-element]="isShaking" 
-          (click)="handleLoginSubmit()"
+          [class.shake-element]="isShaking"
+          (click)="handleRegisterSubmit()"
         >
-          Login
+          Register
         </button>
       </div>
 
     </form>
 
     <div class="auth-footer-prompt-row">
-      <p>Don't have an account? <span class="action-link-anchor highlight-weight" routerLink="/register">Create one</span></p>
+      <p>Already have an account? <span class="action-link-anchor highlight-weight" routerLink="/">Login here</span></p>
     </div>
 
   </div>

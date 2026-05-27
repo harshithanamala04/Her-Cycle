@@ -1,32 +1,74 @@
 <div class="calendar-page">
   <div class="calendar-container">
 
-    <div class="calendar-header">
-      <h1>{{ currentMonth }} {{ currentYear }}</h1>
-      <p class="subtitle-text">Track your cycle metrics</p>
+    <div class="month-block-section">
+      <div class="calendar-header">
+        <h1>{{ prevMonthName }} {{ prevMonthYear }}</h1>
+        <p class="subtitle-text">Past cycle history log</p>
+      </div>
+      <div class="weekdays-grid">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div class="days-grid">
+        <div *ngFor="let empty of prevMonthPadding" class="day-cell empty-cell"></div>
+        <div 
+          *ngFor="let day of prevMonthDays" 
+          class="day-cell"
+          [class.is-period]="isPeriodDay(day, prevMonthIndex, prevMonthYear)"
+          [class.is-fertile]="isFertileDay(day, prevMonthIndex, prevMonthYear)"
+          [class.is-ovulation]="isOvulationDay(day, prevMonthIndex, prevMonthYear)"
+        >
+          {{ day }}
+        </div>
+      </div>
     </div>
 
-    <div class="weekdays-grid">
-      <span>Sun</span>
-      <span>Mon</span>
-      <span>Tue</span>
-      <span>Wed</span>
-      <span>Thu</span>
-      <span>Fri</span>
-      <span>Sat</span>
+    <hr class="month-divider" />
+
+    <div class="month-block-section">
+      <div class="calendar-header">
+        <h1>{{ currentMonthName }} {{ currentMonthYear }}</h1>
+        <p class="subtitle-text">Active cycle tracking matrix</p>
+      </div>
+      <div class="weekdays-grid">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div class="days-grid">
+        <div *ngFor="let empty of currentMonthPadding" class="day-cell empty-cell"></div>
+        <div 
+          *ngFor="let day of currentMonthDays" 
+          class="day-cell"
+          [class.is-today]="isToday(day, currentMonthIndex, currentMonthYear)"
+          [class.is-period]="isPeriodDay(day, currentMonthIndex, currentMonthYear)"
+          [class.is-fertile]="isFertileDay(day, currentMonthIndex, currentMonthYear)"
+          [class.is-ovulation]="isOvulationDay(day, currentMonthIndex, currentMonthYear)"
+        >
+          {{ day }}
+        </div>
+      </div>
     </div>
 
-    <div class="days-grid">
-      <div 
-        *ngFor="let day of days" 
-        class="day-cell"
-        [class.is-today]="isToday(day)"
-        [class.is-period]="isPeriodDay(day)"
-        [class.is-fertile]="isFertileDay(day)"
-        [class.is-ovulation]="isOvulationDay(day)"
-        (click)="selectDay(day)"
-      >
-        {{ day }}
+    <hr class="month-divider" />
+
+    <div class="month-block-section">
+      <div class="calendar-header">
+        <h1>{{ nextMonthName }} {{ nextMonthYear }}</h1>
+        <p class="subtitle-text">Future cycle projections</p>
+      </div>
+      <div class="weekdays-grid">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div class="days-grid">
+        <div *ngFor="let empty of nextMonthPadding" class="day-cell empty-cell"></div>
+        <div 
+          *ngFor="let day of nextMonthDays" 
+          class="day-cell"
+          [class.is-period]="isPeriodDay(day, nextMonthIndex, nextMonthYear)"
+          [class.is-fertile]="isFertileDay(day, nextMonthIndex, nextMonthYear)"
+          [class.is-ovulation]="isOvulationDay(day, nextMonthIndex, nextMonthYear)"
+        >
+          {{ day }}
+        </div>
       </div>
     </div>
 
@@ -38,23 +80,22 @@
           <p>Expected cycle bleed trackers</p>
         </div>
       </div>
-
       <div class="summary-item">
         <span class="legend-dot fertile-dot"></span>
         <div class="summary-text">
           <h3>Fertile Window</h3>
-          <p>High conception probability days: {{ fertileWindow }}</p>
+          <p>High conception probability days</p>
         </div>
       </div>
-
       <div class="summary-item">
         <span class="legend-dot ovulation-dot"></span>
         <div class="summary-text">
           <h3>Peak Ovulation Day</h3>
-          <p>Expected ovulation: Day {{ ovulationDay }}</p>
+          <p>Expected day of ovulation</p>
         </div>
       </div>
     </div>
 
-  </div> <app-bottom-navbar></app-bottom-navbar>
+  </div>
+  <app-bottom-navbar></app-bottom-navbar>
 </div>

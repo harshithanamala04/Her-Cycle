@@ -1,10 +1,10 @@
 /* ==========================================
-   1. CORE GLOBAL PAGE FRAMES
+   1. CORE LIGHT MODE LAYOUT FRAMES
    ========================================== */
 .notifications-page {
   min-height: 100vh;
   background-color: #ffffff;
-  padding: 40px 24px 160px 24px;
+  padding: 75px 24px 160px 24px; /* Increased top padding to 75px to fix the cutoff completely */
   transition: background-color 0.3s ease;
   box-sizing: border-box;
 }
@@ -17,9 +17,6 @@
   gap: 28px;
 }
 
-/* ==========================================
-   2. TYPOGRAPHY & HEADER ROW FORMATTING
-   ========================================== */
 .notifications-main-title-row {
   display: flex;
   align-items: center;
@@ -48,8 +45,8 @@
   flex: 1;
 }
 
-.header-spacer {
-  width: 44px; /* Perfectly counterbalances the back arrow size to keep title perfectly centered */
+.header-spacer { 
+  width: 44px; 
 }
 
 .notifications-main-title h1 {
@@ -61,7 +58,7 @@
 }
 
 /* ==========================================
-   3. INSPIRATIONAL QUOTE CARD BANNER
+   2. INSPIRATIONAL QUOTE CARD BANNER
    ========================================== */
 .quote-card-bubble {
   background: linear-gradient(135deg, #fff1f6 0%, #f6f0fe 100%);
@@ -92,7 +89,7 @@
 }
 
 /* ==========================================
-   4. REMINDERS ROW CARD LAYOUTS
+   3. REMINDERS ROW CARD LAYOUTS
    ========================================== */
 .notifications-options-list {
   display: flex;
@@ -125,7 +122,6 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .period-alert-badge { background: #ffeef2; }
@@ -133,18 +129,11 @@
 .ovulation-alert-badge { background: #f3f0ff; }
 .water-reminder-badge { background: #e0f2fe; }
 
-.row-meta-text {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
 .row-meta-text h3 {
   font-size: 19px;
   font-weight: 700;
   color: #000000;
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
 }
 
 .row-meta-text p {
@@ -155,7 +144,7 @@
 }
 
 /* ==========================================
-   5. iOS SMOOTH PINK SLIDER SWITCHES
+   4. iOS SMOOTH PINK SLIDER SWITCHES
    ========================================== */
 .reminder-toggle-switch {
   position: relative;
@@ -165,9 +154,7 @@
   flex-shrink: 0;
 }
 
-.reminder-toggle-switch input {
-  opacity: 0; width: 0; height: 0; display: none;
-}
+.reminder-toggle-switch input { display: none; }
 
 .toggle-slider-pill {
   position: absolute; cursor: pointer;
@@ -195,36 +182,46 @@
 }
 
 /* ==========================================
-   6. PREMIUM SYSTEM DARK MODE TUNING HOOKS
+   5. COMPONENT LOCAL DARK HOOKS
    ========================================== */
-html.dark .notifications-page {
+:host-context(html.dark) .notifications-page {
   background-color: #0d0714 !important;
 }
 
-html.dark .quote-card-bubble {
+:host-context(html.dark) .quote-card-bubble {
   background: rgba(29, 21, 38, 0.65) !important;
   border: 1px solid rgba(255, 45, 112, 0.15) !important;
 }
 
-html.dark .dashboard-quote-text {
+:host-context(html.dark) .dashboard-quote-text {
   color: #e5dbf0 !important;
 }
 
-html.dark .notifications-main-title h1,
-html.dark .row-meta-text h3,
-html.dark .notifications-back-btn {
+:host-context(html.dark) h1,
+:host-context(html.dark) .row-meta-text h3,
+:host-context(html.dark) .notifications-back-btn {
   color: #ffffff !important;
 }
 
-html.dark .row-meta-text p {
+:host-context(html.dark) .row-meta-text p {
   color: #a496b5 !important;
 }
 
-html.dark .period-alert-badge { background: rgba(255, 45, 112, 0.15) !important; }
-html.dark .fertile-alert-badge { background: rgba(234, 179, 8, 0.15) !important; }
-html.dark .ovulation-alert-badge { background: rgba(139, 92, 246, 0.15) !important; }
-html.dark .water-reminder-badge { background: rgba(56, 189, 248, 0.15) !important; }
+:host-context(html.dark) .period-alert-badge { background: rgba(255, 45, 112, 0.15) !important; }
+:host-context(html.dark) .row-meta-text h3,
+:host-context(html.dark) .notifications-back-btn {
+  color: #ffffff !important;
+}
 
-html.dark .toggle-slider-pill {
+:host-context(html.dark) .row-meta-text p {
+  color: #a496b5 !important;
+}
+
+:host-context(html.dark) .period-alert-badge { background: rgba(255, 45, 112, 0.15) !important; }
+:host-context(html.dark) .fertile-alert-badge { background: rgba(234, 179, 8, 0.15) !important; }
+:host-context(html.dark) .ovulation-alert-badge { background: rgba(139, 92, 246, 0.15) !important; }
+:host-context(html.dark) .water-reminder-badge { background: rgba(56, 189, 248, 0.15) !important; }
+
+:host-context(html.dark) .toggle-slider-pill {
   background-color: #271d33;
 }

@@ -1,80 +1,93 @@
 <div class="today-page">
-  <div class="content">
+  <div class="today-container">
     
-    <div class="top-icons">
+    <div class="today-header">
       <i class="bi bi-gear settings-icon" routerLink="/settings"></i>
-      <i class="bi bi-bell" routerLink="/notifications"></i>
+      <i class="bi bi-bell bell-icon" routerLink="/notifications"></i>
     </div>
 
-    <div class="hero-block-panel">
-      <div class="period-card">
-        <span class="period-title">{{ title }}</span>
-        <h1 class="main-days-display">{{ periodDay }}</h1>
-        <p class="date-text">Current State Information Metrics</p>
-        <button class="period-btn" (click)="toggleLogModal(true)">
-          Log Period
+    <div class="cycle-progress-ring-section">
+      <div class="circle-counter-title">PERIOD</div>
+      <div class="day-counter-main">{{ daysLeftDisplay }}</div>
+      <p class="subtitle-caption">Current State Information Metrics</p>
+      <button class="log-period-action-btn" (click)="openLogModal()">Log Period</button>
+    </div>
+
+    <div class="feeling-card">
+      <span class="card-emoji-decor">🌸</span>
+      <p class="tracker-sub-text">Be gentle and understanding with yourself today.</p>
+    </div>
+
+    <div class="metrics-highlights-row">
+      <div class="status-card-shell day-info-card" routerLink="/calendar">
+        <span class="card-header-label">Day {{ currentDayOfCycle }}</span>
+        <p class="card-meta-desc">Current Cycle</p>
+      </div>
+
+      <div class="status-card-shell prediction-info-card" routerLink="/calendar">
+        <span class="card-header-label">{{ nextPeriodDateFormatted }}</span>
+        <p class="card-meta-desc">Next Fertile</p>
+      </div>
+
+      <div class="status-card-shell fertile-info-card" routerLink="/calendar">
+        <span class="card-header-label">{{ nextOvulationDateFormatted }}</span>
+        <p class="card-meta-desc">Ovulation</p>
+      </div>
+    </div>
+
+    <div class="daily-log-prompt-card">
+      <div class="prompt-left-content">
+        <h2>How are you feeling today?</h2>
+        <p>Tell us more about your body to get analysis</p>
+        <button class="track-day-btn" routerLink="/track-day">
+          <span class="btn-sparkle">✨</span> Track my Day
         </button>
       </div>
-    </div>
-
-    <div class="dashboard-quote-container">
-      <div class="quote-card-bubble">
-        <div class="quote-icon-decor">🌸</div>
-        <p class="dashboard-quote-text">Be gentle and understanding with yourself today.</p>
+      <div class="prompt-right-graphic">
+        <span class="sun-sticker-emoji">🌞</span>
       </div>
     </div>
 
-    <div class="prediction-cards-grid">
+  </div>
+
+  <div class="modal-backdrop-overlay" *ngIf="showLogModal" (click)="closeLogModal()">
+    <div class="bottom-sheet-modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-drag-indicator"></div>
       
-      <div class="predict-card pink-gradient-card" routerLink="/calendar">
-        <div class="card-date-info">
-          <h3>Day {{ cycleDay }}</h3>
-          <p>Current Cycle</p>
-        </div>
-        <span class="card-graphic">💧</span>
-      </div>
-
-      <div class="predict-card yellow-gradient-card" routerLink="/calendar">
-        <div class="card-date-info">
-          <h3>{{ fertileDate }}</h3>
-          <p>Next Fertile</p>
-        </div>
-        <span class="card-graphic">🌱</span>
-      </div>
-
-      <div class="predict-card orange-gradient-card" routerLink="/calendar">
-        <div class="card-date-info">
-          <h3>{{ ovulationDate }}</h3>
-          <p>Ovulation</p>
-        </div>
-        <span class="card-graphic">🍳</span>
-      </div>
-
-    </div>
-
-    <div class="feeling-card-panel">
-      <div class="feeling-card">
-        <div class="feeling-text-group">
-          <h2>How are you feeling today?</h2>
-          <p>Tell us more about your body to get analysis</p>
-          <button class="log-today-btn" routerLink="/add-entry">✨ Track my Day</button>
-        </div>
-        <span class="feeling-graphic">🌞</span>
-      </div>
-    </div>
-
-  </div> <div class="modal-backdrop" *ngIf="showLogModal" (click)="toggleLogModal(false)">
-    <div class="modal-sheet animate-slide-up" (click)="$event.stopPropagation()">
-      <div class="drag-handle"></div>
-      <div class="modal-header">
+      <div class="modal-header-block">
         <h2>Log Period Start Date</h2>
         <p>When did this current cycle start?</p>
       </div>
-      <div class="inline-date-picker">
-        <label>Select Calendar Day:</label>
-        <input type="date" [value]="selectedLogDate" #dateInput (change)="onDateSelected(dateInput.value)">
+
+      <div class="modal-body-form">
+        
+        <label class="input-field-caption">Select Calendar Day:</label>
+        <div class="date-picker-wrapper-row">
+          <input 
+            type="date" 
+            [(ngModel)]="manualLogDate" 
+            class="custom-modal-date-input"
+          >
+        </div>
+
+        <label class="input-field-caption" style="margin-top: 14px;">Cycle Length (Days):</label>
+        <div class="date-picker-wrapper-row">
+          <input 
+            type="number" 
+            [(ngModel)]="manualCycleLength" 
+            name="manualCycleLength"
+            placeholder="e.g. 28"
+            min="15"
+            max="45"
+            class="custom-modal-date-input"
+            style="letter-spacing: 0.5px;"
+          >
+        </div>
+        
+        <button class="modal-submit-save-btn" style="margin-top: 8px;" (click)="saveManualPeriodLog()">
+          Save Log Data
+        </button>
       </div>
-      <button class="save-log-btn" (click)="savePeriodLog()">Save Log Data</button>
     </div>
   </div>
 

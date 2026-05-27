@@ -1,5 +1,5 @@
 /* ==========================================
-   1. CORE LIGHT MODE VIEWPORT WRAPPER
+   1. CORE VIEWPORT BACKGROUND WRAPPER
    ========================================== */
 .login-page {
   min-height: 100vh;
@@ -31,7 +31,7 @@
 }
 
 .app-main-title {
-  font-size: 38px;
+  font-size: 34px;
   font-weight: 800;
   color: #111111;
   margin: 0 0 6px 0;
@@ -79,7 +79,40 @@
 }
 
 /* ==========================================
-   4. FORM ELEMENTS AND PARAMETERS HOOKS
+   4. SUCCESS ACTION NOTIFICATION BANNER (FOR FORGOT PASSWORD)
+   ========================================== */
+.web-success-banner {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: all 0.25s ease;
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+}
+
+.web-success-banner.show-success {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  height: auto;
+  margin-bottom: 20px;
+  overflow: visible;
+}
+
+/* ==========================================
+   5. FORM ELEMENTS AND PARAMETERS HOOKS
    ========================================== */
 .auth-form-body {
   display: flex;
@@ -120,7 +153,6 @@
   box-shadow: 0 0 0 4px rgba(92, 82, 203, 0.06);
 }
 
-/* HIGH-CONTRAST WEBSITE ERROR OUTLINE PROFILE EFFECT */
 .auth-text-input.input-error-border {
   border-color: #e11d48 !important;
   background-color: #fff1f2 !important;
@@ -134,7 +166,7 @@
 }
 
 /* ==========================================
-   5. SLEEK NAV LINKS AND INTERACTIVE BUTTONS
+   6. INTERACTIVE ACTION BUTTONS & SLEEK LINKS
    ========================================== */
 .action-link-anchor {
   font-size: 13px;
@@ -198,7 +230,7 @@
 }
 
 /* ==========================================
-   6. PREMIUM PRODUCTION WEBSITE ANIMATIONS
+   7. PREMIUM SHAKE ANIMATION EFFECTS
    ========================================== */
 .shake-element {
   animation: webShake 0.4s ease-in-out;

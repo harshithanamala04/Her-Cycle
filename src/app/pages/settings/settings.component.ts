@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
+import { Auth, signOut } from '@angular/fire/auth';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import { ThemeService } from '../../services/theme.service';
 import { BottomNavbarComponent } from '../../components/bottom-navbar/bottom-navbar.component';
@@ -58,9 +58,6 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  /**
-   * NAVIGATIONAL FIX: Returns user back to primary layout dashboard safely
-   */
   goBackToToday(): void {
     this.router.navigate(['/today']);
   }
@@ -68,5 +65,15 @@ export class SettingsComponent implements OnInit {
   toggleDarkMode(): void {
     this.themeService.toggleTheme();
     this.isDarkMode = this.themeService.getCurrentThemeStatus();
+  }
+
+  // ACTIVE INTERACTION: Handles securely destroying active token sessions via Firebase Auth
+  async handleSignOutRequest() {
+    try {
+      await signOut(this.auth);
+      this.router.navigate(['/']);
+    } catch (error) {
+      console.error('An exception error occurred during user logouts context execution:', error);
+    }
   }
 }

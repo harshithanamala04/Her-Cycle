@@ -1,11 +1,12 @@
 /* ==========================================
-   1. CORE GLOBAL PAGE FRAMES
+   1. CORE LIGHT MODE LAYOUT FRAMES
    ========================================== */
 .settings-page {
   min-height: 100vh;
   background-color: #f4f0fb;
   padding: 40px 20px 160px 20px;
   transition: background-color 0.3s ease;
+  box-sizing: border-box;
 }
 
 .settings-container {
@@ -16,9 +17,6 @@
   gap: 24px;
 }
 
-/* ==========================================
-   2. TYPOGRAPHY & HEADER ROW FORMATTING
-   ========================================== */
 .settings-main-title-row {
   display: flex;
   align-items: center;
@@ -46,15 +44,14 @@
   flex: 1;
 }
 
-.header-spacer {
-  width: 40px; /* Perfectly counterbalances back button area size to keep title perfectly centered */
-}
+.header-spacer { width: 40px; }
 
 .settings-main-title h1 {
   font-size: 28px;
   font-weight: 800;
   color: #111111;
   margin: 0 0 4px 0;
+  font-family: serif, system-ui;
 }
 
 .settings-main-title p {
@@ -64,9 +61,6 @@
   margin: 0;
 }
 
-/* ==========================================
-   3. ITEM CARDS DEFINITIONS
-   ========================================== */
 .account-header-card {
   background: #ffffff;
   border-radius: 24px;
@@ -117,7 +111,6 @@
   align-items: center;
   padding: 18px 0;
   cursor: pointer;
-  text-decoration: none;
 }
 
 .settings-row:not(:last-child) {
@@ -141,6 +134,11 @@
   justify-content: center;
 }
 
+/* Soft red warning frame profile context badge icons background mapping */
+.sign-out-badge {
+  background: #fff1f2 !important;
+}
+
 .row-meta-text h3 {
   font-size: 16px;
   font-weight: 600;
@@ -154,15 +152,18 @@
   margin: 0;
 }
 
+/* Targeted Sign Out Alert Style Configuration Label Profiles */
+.sign-out-text-label {
+  color: #e11d48 !important;
+  font-weight: 700 !important;
+}
+
 .navigation-arrow {
   font-size: 18px;
   color: #bfaecf;
   font-weight: bold;
 }
 
-/* ==========================================
-   4. ORIGINAL PREMIUM iOS SLIDER SWITCH
-   ========================================== */
 .theme-toggle-switch {
   position: relative;
   display: inline-block;
@@ -170,9 +171,7 @@
   height: 28px;
 }
 
-.theme-toggle-switch input {
-  opacity: 0; width: 0; height: 0; display: none;
-}
+.theme-toggle-switch input { display: none; }
 
 .toggle-slider-pill {
   position: absolute; cursor: pointer;
@@ -200,31 +199,97 @@ input:checked + .toggle-slider-pill:before {
 }
 
 /* ==========================================
-   5. UNIFIED SYSTEM DARK MODE HOOKS
+   2. HIGH-PRIORITY COMPONENT LOCAL DARK HOOKS
    ========================================== */
-html.dark .account-header-card,
-html.dark .settings-options-list {
-  background: #1d1526 !important;
-  border: 1px solid rgba(255, 45, 112, 0.12) !important;
+:host-context(html.dark) .settings-page {
+  background-color: #0d0714 !important;
 }
 
-html.dark .settings-main-title h1,
-html.dark .profile-details-group h2,
-html.dark .row-meta-text h3,
-html.dark .settings-back-btn {
+:host-context(html.dark) .account-header-card,
+:host-context(html.dark) .settings-options-list {
+  background: rgba(29, 21, 38, 0.65) !important;
+  border: 1px solid rgba(255, 45, 112, 0.15) !important;
+}
+
+:host-context(html.dark) h1,
+:host-context(html.dark) h2,
+:host-context(html.dark) h3,
+:host-context(html.dark) .settings-back-btn,
+:host-context(html.dark) .navigation-arrow,
+:host-context(html.dark) .row-meta-text h3:not(.sign-out-text-label) {
   color: #ffffff !important;
 }
 
-html.dark .settings-main-title p,
-html.dark .profile-details-group p,
-html.dark .row-meta-text p {
-  color: #a496b5 !important;
+:host-context(html.dark) p,
+:host-context(html.dark) .profile-details-group p,
+:host-context(html.dark) .row-meta-text p {
+  color: #bfaecf !important;
 }
 
-html.dark .row-emoji-icon {
+:host-context(html.dark) .row-emoji-icon:not(.sign-out-badge) {
   background: #271d33 !important;
 }
 
-html.dark .settings-row:not(:last-child) {
-  border-bottom: 1px solid #271d33 !important;
+:host-context(html.dark) .sign-out-badge {
+  background: rgba(225, 29, 72, 0.15) !important;
+}
+
+:host-context(html.dark) .settings-row:not(:last-child) {
+  border-bottom: 1px solid rgba(39, 29, 51, 0.65) !important;
+}
+
+/* ==========================================
+   STANDALONE ACTION SIGN OUT BUTTON
+   ========================================== */
+.settings-logout-btn {
+  width: 100%;
+  background-color: #ffffff;
+  color: #e11d48;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(225, 29, 72, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.03);
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.settings-logout-btn:hover {
+  background-color: #fff1f2;
+  border-color: #e11d48;
+  transform: translateY(-1px);
+}
+
+.settings-logout-btn:active {
+  transform: scale(0.99);
+}
+
+.logout-btn-emoji {
+  font-size: 18px;
+}
+
+/* ==========================================
+   HIGH-PRIORITY LOCAL DARK HOOKS FOR BUTTON
+   ========================================== */
+:host-context(html.dark) .settings-logout-btn {
+  background: rgba(225, 29, 72, 0.06) !important;
+  border: 1px solid rgba(225, 29, 72, 0.3) !important;
+  color: #f43f5e !important;
+  box-shadow: none !important;
+}
+
+:host-context(html.dark) .settings-logout-btn:hover {
+  background: rgba(225, 29, 72, 0.15) !important;
+  border-color: #f43f5e !important;
+}
+
+/* Fix option border dividers since only Dark Mode is left in the list card box */
+.settings-options-list .settings-row {
+  border-bottom: none !important;
 }
